@@ -1,0 +1,25 @@
+{
+  "name": "crypto_data_fetch",
+  "version": "1.0.0",
+  "description": "Fetches cryptocurrency data for 11 supported coins and altocoins",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/nombiezinja/crypto_data_fetch.git"
+  },
+  "author": "Ti Zhang",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/nombiezinja/crypto_data_fetch#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "dotenv": "^4.0.0",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "knex": "^0.14.2",
+    "nodemon": "^1.13.2",
+    "pg": "^7.4.0"
+  }
+}
