@@ -3,29 +3,43 @@ const knexConfig = require("../knexfile");
 const knex = require("knex")(knexConfig[ENV]);
 const request = require('request');
 const dbHelper = require.main.require('./helpers/dbHelper')(knex);
+const moment = require('moment')
 
-const fetchCrypto = (time, coinId, coinName) => {
-  let newTime = time + 86400
-  console.log(coinId);
-  console.log(`time is ${time}`)
-  const url = `https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${time}`;
-  const requestPromise = new Promise((resolve, reject) => {
-    request(url, (error, response, body) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(body);
-      }
+
+const fetchCrypto = (coinId, coinName) => {
+  // console.log(moment(moment.utc().startOf('day')).unix())
+  const startTime = moment(moment.utc().startOf('day')).unix();
+  // const endTime = startTime - 86400 * 1095
+  const endTime = startTime - 86400 * 30;
+  const interval = 86400;
+  
+  const promises = [];
+
+  for (let i = startTime; i >= endTime; i -= interval){
+    console.log(i, coinId)
+    const url = `https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${i}`;
+    
+    const requestPromise = new Promise((resolve, reject) => {
+      request(url, (error, response, body) => {
+        if (error) {
+          reject(error);
+        } else {
+          setTimeout(() => {resolve(body)}, 1000);
+        }
+      });
     });
-  });
 
-  return requestPromise
-    .then((body) => {
-      return dbHelper.saveHistory(coinId, coinName, time, JSON.parse(body))
-        .then(() => {
-          return newTime;
-        });
+    const savePromise = requestPromise.then((body) => {
+      dbHelper.saveHistory(coinId, coinName, i, JSON.parse(body))
     })
+  
+    promises.push(savePromise);
+  }
+
+  Promise.all(promises).then(() => {
+    console.log("We did it!")
+  })
+  
 }
 
 const fetchCryptoHigh = (time) => {

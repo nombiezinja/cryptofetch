@@ -1,6 +1,7 @@
 module.exports = (knex) => {
   return {
     saveHistory: (coinId, coinName, time, response) => {
+      console.log(response);
       return knex.table('histories').insert({
           coin_id: coinId,
           display_name: coinName,

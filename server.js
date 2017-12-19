@@ -44,23 +44,9 @@ app.get('/history', (req, res) => {
     omg: 'OmiseGO',
     bch: 'Bitcoin Cash'
   }
-  // console.log(moment(moment.utc().startOf('day')).unix())
-  const startTime = moment(moment.utc().startOf('day')).unix()
-  // const endTime = startTime - 86400 * 1095
-  const endTime = startTime - 86400 * 30
-  const interval = 86400
-  
-  let time = startTime
 
   for (const currency in currencies) {
-    console.log(time)
-    while (time >= endTime) { 
-      const fetchDataPromise = fetchTasks.fetchCrypto(time, currency, currencies[currency])
-      fetchDataPromise.then((returnTime) => {
-        console.log(`I did this promise thing and the returnTime is ${returnTime}`)
-        time = returnTime
-      });
-    } 
+    fetchTasks.fetchCrypto(currency, currencies[currency])
   }
 
 })
