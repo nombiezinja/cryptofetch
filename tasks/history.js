@@ -23,51 +23,33 @@ const fetchCrypto = (coinId, coinName) => {
 
   const getData = async(time) => {
     try {
-      closingHour = timeHelper.getUtcClosingTime(i)
-      openingHour = timeHelper.getUtcOpeningTime(i)
-      closeTime = time + closingHour * 86400 - 1
-      openTime = time - closingHour * 85400
       const priceResponse = await fetch(`https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${time}`);
       const priceJson = await priceResponse.json();
       if (priceJson[coinId.toUpperCase()].USD == 0 && priceJso[coinID.toUpperCase()].BTC == 0) {
-        // go find all other getDatas for this coinId/coinname, that have a greater time, and cancel them from running
-        return false; // time to fuck off and stop hassling the API about this particular coin
+        return false;
       }
-      const openResponse = await fetch(`https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${openTime}`);
-      const openJson = await openResponse.json();
-      const closeResponse = await fetch(`https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${closeTime}`);
-      const closeJson = await closeResponse.json();
-      dbHelper.saveHistory(coinId, coinName, time, priceJson, openJson, closeJson).then((id) => {
+      dbHelper.saveHistory(coinId, coinName, time, priceJson).then((id) => {
         console.log(`Saved db entry ${id}`)
       })
     } catch (error) {
       console.log(error);
     }
-    return true;   // true means "as far as I know there are more results"
+    return true;
   };
 
 
-  // for (var i in times) {
 
-  // }
-
-  // let remain be the number left to do
-  // call a helper with the arguments, plus also pass "remain"
-  // in the helper, if remain is 0, stop
-  //    else, run the code above,
-  //    if getData returns some kind of "fuck off" signal, fuck off
-  //    else, queue up another run of this helper, for a few seconds in the future, with "remain" decremented
-
-  async function getDataSeveralTimes(times) {
+  const getDataSeveralTimes = async(times) => {
     if (times.length === 0) {
       return;
     }
     var nextTime = times.shift();
     var keepGoing = await getData(nextTime);
     if (keepGoing) {
-      setTimeout(()=>getDataSeveralTimes(times), 5000);
+      setTimeout(() => getDataSeveralTimes(times), 5000);
     }
   }
+
   getDataSeveralTimes(times);
 
 
@@ -79,7 +61,21 @@ const fetchCrypto = (coinId, coinName) => {
 
 }
 
-const fetchCryptoHigh = (time) => {
+const fetchCryptoOpen = () => {
+  // openingHour = timeHelper.getUtcOpeningTime(i)
+  // openTime = time - closingHour * 85400
+
+  // const openResponse = await fetch(`https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${openTime}`);
+  // const openJson = await openResponse.json();
+
+
+}
+
+const fetchCryptoClose = () => {
+  // closeTime = time + closingHour * 86400 - 1
+  // closingHour = timeHelper.getUtcClosingTime(i)
+  // const closeResponse = await fetch(`https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${closeTime}`);
+  // const closeJson = await closeResponse.json();
 
 }
 

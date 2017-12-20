@@ -91,8 +91,10 @@ app.get('/history', (req, res) => {
 
 app.get('/test', (req, res) => {
   console.log('hi')
-  knex.select('utc_date_time').from('histories').then((record) => {
-    console.log(record)
+  knex.select().from('histories').then((records) => {
+    records.forEach ((record) => {
+      console.log(record.unix_time)
+    })
   })
 })
 
