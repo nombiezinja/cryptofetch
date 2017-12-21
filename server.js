@@ -12,6 +12,7 @@ const moment = require('moment')
 const app = express();
 const server = http.createServer(app);
 
+const timeHelper = require.main.require('./helpers/timeHelper')
 const fetchTasks = require("./tasks/history");
 
 app.use(bodyParser.urlencoded({
@@ -30,72 +31,84 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
-app.get('/history', (req, res) => {
-  const currencies = [{
-      coinId: 'btc',
-      coinName: 'Bitcoin'
-    },
-    {
-      coinId: 'eth',
-      coinName: 'Ethereum'
-    },
-    {
-      coinId: 'neo',
-      coinName: 'NEO'
-    },
-    {
-      coinId: 'gas',
-      coinName: 'GAS'
-    },
-    {
-      coinId: 'ltc',
-      coinName: 'Litecoin'
-    },
-    {
-      coinId: 'lsk',
-      coinName: 'Lisk'
-    },
-    {
-      coinId: 'xmr',
-      coinName: 'Monero XMR'
-    },
-    {
-      coinId: 'ark',
-      coinName: 'Ark'
-    },
-    {
-      coinId: 'iot',
-      coinName: 'Iota'
-    },
-    {
-      coinId: 'omg',
-      coinName: 'OmiseGO'
-    },
-    {
-      coinId: 'bch',
-      coinName: 'Bitcoin Cash'
-    }
-  ]
+const currencies = [{
+    coinId: 'btc',
+    coinName: 'Bitcoin'
+  },
+  {
+    coinId: 'eth',
+    coinName: 'Ethereum'
+  },
+  {
+    coinId: 'neo',
+    coinName: 'NEO'
+  },
+  {
+    coinId: 'gas',
+    coinName: 'GAS'
+  },
+  {
+    coinId: 'ltc',
+    coinName: 'Litecoin'
+  },
+  {
+    coinId: 'lsk',
+    coinName: 'Lisk'
+  },
+  {
+    coinId: 'xmr',
+    coinName: 'Monero XMR'
+  },
+  {
+    coinId: 'ark',
+    coinName: 'Ark'
+  },
+  {
+    coinId: 'iot',
+    coinName: 'Iota'
+  },
+  {
+    coinId: 'omg',
+    coinName: 'OmiseGO'
+  },
+  {
+    coinId: 'bch',
+    coinName: 'Bitcoin Cash'
+  }
+]
 
-  // for (const currency in currencies) {
-  //   fetchTasks.fetchCrypto(currency, currencies[currency])
-  // }
-  let j = 0
+app.get('/history', (req, res) => {
+
   currencies.forEach((currency, j) => {
     setTimeout(function () {
       fetchTasks.fetchCrypto(currency.coinId, currency.coinName)
-    }, 5000 * (j + 1))
+    }, 5000 * (j + 1));
   });
 
 })
 
+app.get('/open', (req, res) => {
+  
+  currencies.forEach((currency, j) => {
+    setTimeout(() => {
+      fetchTasks.updateWithOpen(currency.coinId)
+    }, 2000 * (j + 1));
+  });
+
+})
+
+app.get('/close', (req, res) => {
+
+  currencies.forEach((currency, j) => {
+    setTimeout(() => {
+      fetchTasks.updateWithClose(currency.coinId)
+    }, 5000 * (j + 1));
+  });
+  
+});
+
 app.get('/test', (req, res) => {
-  console.log('hi')
-  knex.select().from('histories').then((records) => {
-    records.forEach ((record) => {
-      console.log(record.unix_time)
-    })
-  })
+  fetchTasks.arrayOfTimes('eth')
 })
 
 server.listen(8080, function listening() {
