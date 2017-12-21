@@ -38,43 +38,43 @@ const currencies = [{
   {
     coinId: 'eth',
     coinName: 'Ethereum'
-  },
-  {
-    coinId: 'neo',
-    coinName: 'NEO'
-  },
-  {
-    coinId: 'gas',
-    coinName: 'GAS'
-  },
-  {
-    coinId: 'ltc',
-    coinName: 'Litecoin'
-  },
-  {
-    coinId: 'lsk',
-    coinName: 'Lisk'
-  },
-  {
-    coinId: 'xmr',
-    coinName: 'Monero XMR'
-  },
-  {
-    coinId: 'ark',
-    coinName: 'Ark'
-  },
-  {
-    coinId: 'iot',
-    coinName: 'Iota'
-  },
-  {
-    coinId: 'omg',
-    coinName: 'OmiseGO'
-  },
-  {
-    coinId: 'bch',
-    coinName: 'Bitcoin Cash'
   }
+  // {
+  //   coinId: 'neo',
+  //   coinName: 'NEO'
+  // },
+  // {
+  //   coinId: 'gas',
+  //   coinName: 'GAS'
+  // },
+  // {
+  //   coinId: 'ltc',
+  //   coinName: 'Litecoin'
+  // },
+  // {
+  //   coinId: 'lsk',
+  //   coinName: 'Lisk'
+  // },
+  // {
+  //   coinId: 'xmr',
+  //   coinName: 'Monero XMR'
+  // },
+  // {
+  //   coinId: 'ark',
+  //   coinName: 'Ark'
+  // },
+  // {
+  //   coinId: 'iot',
+  //   coinName: 'Iota'
+  // },
+  // {
+  //   coinId: 'omg',
+  //   coinName: 'OmiseGO'
+  // },
+  // {
+  //   coinId: 'bch',
+  //   coinName: 'Bitcoin Cash'
+  // }
 ]
 
 app.get('/history', (req, res) => {
@@ -104,7 +104,7 @@ app.get('/close', (req, res) => {
       fetchTasks.updateWithClose(currency.coinId)
     }, 5000 * (j + 1));
   });
-  
+
 });
 
 app.get('/test', (req, res) => {

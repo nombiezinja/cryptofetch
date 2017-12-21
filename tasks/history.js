@@ -54,7 +54,7 @@ const fetchCrypto = async(coinId, coinName) => {
         return false;
       }
       dbHelper.saveHistory(coinId, coinName, time, priceJson).then((id) => {
-        console.log(`Saved db entry ${id}`)
+        console.log(`Saved db entry ${id} for ${priceJson} and ${time}`)
       })
     } catch (error) {
       console.log(error);
