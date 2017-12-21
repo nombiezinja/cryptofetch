@@ -114,7 +114,6 @@ app.get('/history', (req, res) => {
     }
     const urls = await Promise.all(constructUrlPromises);
     fetchTasks.fetchCrypto(urls);
-    console.log(urls)
   }
 
   callFromIdTimes()
