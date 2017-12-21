@@ -27,6 +27,7 @@ const arrayOfTimes = async(coinId) => {
 const arrayOfIdAndTimes = async(coinId, coinName) => {
 
   const startTime = await timeHelper.getStartTime(coinId)
+
   const numberOfDays = await timeHelper.numberOfDays(startTime)
   const interval = 86400;
   const endTime = startTime - interval * numberOfDays;
@@ -35,14 +36,14 @@ const arrayOfIdAndTimes = async(coinId, coinName) => {
 
   i = startTime;
   for (let i = startTime; i >= endTime; i -= interval) {
-    times.push({coinId: coinId, coinName: coinName, time: i});
+    times.push({
+      coinId: coinId,
+      coinName: coinName,
+      time: i
+    });
   }
 
   return times
-}
-
-const arrayOfUrls = async(currencies) => {
-
 }
 
 const arrayOfTimesForUpdate = async(coinId) => {
@@ -72,9 +73,14 @@ const fetchCrypto = async(fetchObjects) => {
       if (priceJson[fetchObject.coinId.toUpperCase()].USD == 0 && priceJson[fetchObject.coinId.toUpperCase()].BTC == 0) {
         return false;
       }
-      dbHelper.saveHistory(fetchObject.coinId, fetchObject.coinName, fetchObject.time, priceJson).then((id) => {
-        console.log(`Saved db entry ${id} for ${priceJson} and ${fetchObject.time}`)
-      })
+      const duplicatePromise = await dbHelper.checkDuplicate(fetchObject.coinId, fetchObject.time)
+      if (!duplicatePromise[0]) {
+        dbHelper.saveHistory(fetchObject.coinId, fetchObject.coinName, fetchObject.time, priceJson).then((id) => {
+          console.log(`Saved db entry ${id} for ${priceJson} and ${fetchObject.time}`)
+        })
+      } else {
+        console.log('Duplicate found, skipping save')
+      }
     } catch (error) {
       console.log(error);
     }
@@ -88,7 +94,7 @@ const fetchCrypto = async(fetchObjects) => {
     var nextTime = fetchObjects.shift();
     var keepGoing = await getData(nextTime);
     if (keepGoing) {
-      setTimeout(() => getDataSeveralTimes(fetchObjects), 2000);
+      setTimeout(() => getDataSeveralTimes(fetchObjects), 1000);
     }
   }
 
@@ -170,14 +176,6 @@ const fetchCryptoClose = (recordId, coinId, time) => {
 
 };
 
-const fetchCoinCap = () => {
-  console.log('This is running')
-  return request("http://coincap.io/history/ETH", (error, response, body) => {
-    console.log(body);
-    return body;
-  });
-};
-
 module.exports = {
   fetchCrypto: fetchCrypto,
   fetchCryptoUpdate: fetchCryptoUpdate,
@@ -185,6 +183,5 @@ module.exports = {
   updateWithOpen: updateWithOpen,
   updateWithClose: updateWithClose,
   arrayOfTimes: arrayOfTimes,
-  arrayOfUrls: arrayOfUrls,
-  arrayOfIdAndTimes:arrayOfIdAndTimes
+  arrayOfIdAndTimes: arrayOfIdAndTimes
 };

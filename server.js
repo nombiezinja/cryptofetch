@@ -12,8 +12,11 @@ const moment = require('moment')
 const app = express();
 const server = http.createServer(app);
 
+const miscHelper = require.main.require('./helpers/miscHelper')
+const dbHelper = require.main.require('./helpers/dbHelper')
 const timeHelper = require.main.require('./helpers/timeHelper')
 const fetchTasks = require("./tasks/history");
+const dailyFetch = require("./tasks/daily");
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -38,43 +41,43 @@ const currencies = [{
   {
     coinId: 'eth',
     coinName: 'Ethereum'
+  }, 
+  {
+    coinId: 'neo',
+    coinName: 'NEO'
+  },
+  {
+    coinId: 'gas',
+    coinName: 'GAS'
+  },
+  {
+    coinId: 'ltc',
+    coinName: 'Litecoin'
+  },
+  {
+    coinId: 'lsk',
+    coinName: 'Lisk'
+  },
+  {
+    coinId: 'xmr',
+    coinName: 'Monero XMR'
+  },
+  {
+    coinId: 'ark',
+    coinName: 'Ark'
+  },
+  {
+    coinId: 'iot',
+    coinName: 'Iota'
+  },
+  {
+    coinId: 'omg',
+    coinName: 'OmiseGO'
+  },
+  {
+    coinId: 'bch',
+    coinName: 'Bitcoin Cash'
   }
-  // {
-  //   coinId: 'neo',
-  //   coinName: 'NEO'
-  // },
-  // {
-  //   coinId: 'gas',
-  //   coinName: 'GAS'
-  // },
-  // {
-  //   coinId: 'ltc',
-  //   coinName: 'Litecoin'
-  // },
-  // {
-  //   coinId: 'lsk',
-  //   coinName: 'Lisk'
-  // },
-  // {
-  //   coinId: 'xmr',
-  //   coinName: 'Monero XMR'
-  // },
-  // {
-  //   coinId: 'ark',
-  //   coinName: 'Ark'
-  // },
-  // {
-  //   coinId: 'iot',
-  //   coinName: 'Iota'
-  // },
-  // {
-  //   coinId: 'omg',
-  //   coinName: 'OmiseGO'
-  // },
-  // {
-  //   coinId: 'bch',
-  //   coinName: 'Bitcoin Cash'
-  // }
 ]
 
 app.get('/history', (req, res) => {
@@ -90,25 +93,12 @@ app.get('/history', (req, res) => {
     timePromises.push(timePromise);
   }
   
-  const constructUrl = (coinId, coinName, time) => {
-    const url = `https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${time}`
-    
-    return {coinId: coinId, coinName: coinName, time: time, url: url}
-  }
-
-  const flatten = (arr) => {
-    return arr.reduce(function (flat, toFlatten) {
-      return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
-    }, []);
-  }
-
   const callFromIdTimes = async () => {
     const idTimes = await Promise.all(timePromises);
-    console.log(idTimes)
-    const idTimesFlattened = await flatten(idTimes)
+    const idTimesFlattened = await new Set(miscHelper.flatten(idTimes))
     for (idTime of idTimesFlattened) { 
       const constructUrlPromise = (idTimePair) => new Promise((resolve, reject) => {
-        resolve(constructUrl(idTime.coinId, idTime.coinName, idTime.time))
+        resolve(miscHelper.constructUrl(idTime.coinId, idTime.coinName, idTime.time))
       })
       constructUrlPromises.push(constructUrlPromise(idTime));
     }
@@ -140,8 +130,36 @@ app.get('/close', (req, res) => {
 
 });
 
+app.get('/24hr', (req, res) => {
+  let timePromises =  [];
+  let constructUrlPromises = [];
+
+  for (c of currencies) {
+    console.log(c.coinName)
+    const timePromise = new Promise((resolve, reject) => {
+      resolve(dailyFetch.arrayOfIdAndTimes(c.coinId, c.coinName))
+    })
+    timePromises.push(timePromise);
+  }
+  
+  const callFromIdTimes = async () => {
+    const idTimes = await Promise.all(timePromises);
+    const idTimesFlattened = await new Set(miscHelper.flatten(idTimes))
+    for (idTime of idTimesFlattened) { 
+      const constructUrlPromise = (idTimePair) => new Promise((resolve, reject) => {
+        resolve(miscHelper.constructUrl(idTime.coinId, idTime.coinName, idTime.time))
+      })
+      constructUrlPromises.push(constructUrlPromise(idTime));
+    }
+    const urls = await Promise.all(constructUrlPromises);
+    fetchTasks.fetchCrypto(urls);
+  }
+
+  callFromIdTimes()
+
+})
+
 app.get('/test', (req, res) => {
-  fetchTasks.arrayOfTimes('eth')
 })
 
 server.listen(8080, function listening() {

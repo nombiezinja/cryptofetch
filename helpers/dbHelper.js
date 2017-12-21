@@ -58,6 +58,15 @@ module.exports = (knex) => {
         })
         .orderBy('unix_time', 'desc')
         .limit(1)
+    }, 
+
+    checkDuplicate: (coinId, unixTime) => {
+      return knex.select()
+        .from('histories')
+        .where({
+          coin_id: coinId,
+          unix_time: unixTime
+        })
     }
 
 
