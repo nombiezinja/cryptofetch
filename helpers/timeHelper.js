@@ -44,7 +44,7 @@ const getEndTime = async(coinId) => {
 }
 
 const numberOfDays = (startTime) => {
-  today = moment(moment.utc().startOf('day')).unix() 
+  let today = moment(moment.utc().startOf('day')).unix() 
   return 365 * 3 - (today - startTime) / 86400 
 }
 

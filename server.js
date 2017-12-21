@@ -79,11 +79,45 @@ const currencies = [{
 
 app.get('/history', (req, res) => {
 
-  currencies.forEach((currency, j) => {
-    setTimeout(function () {
-      fetchTasks.fetchCrypto(currency.coinId, currency.coinName)
-    }, 5000 * (j + 1));
-  });
+  let timePromises =  [];
+  let constructUrlPromises = [];
+
+  for (c of currencies) {
+    console.log(c.coinName)
+    const timePromise = new Promise((resolve, reject) => {
+      resolve(fetchTasks.arrayOfIdAndTimes(c.coinId, c.coinName))
+    })
+    timePromises.push(timePromise);
+  }
+  
+  const constructUrl = (coinId, coinName, time) => {
+    const url = `https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${time}`
+    
+    return {coinId: coinId, coinName: coinName, time: time, url: url}
+  }
+
+  const flatten = (arr) => {
+    return arr.reduce(function (flat, toFlatten) {
+      return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+    }, []);
+  }
+
+  const callFromIdTimes = async () => {
+    const idTimes = await Promise.all(timePromises);
+    console.log(idTimes)
+    const idTimesFlattened = await flatten(idTimes)
+    for (idTime of idTimesFlattened) { 
+      const constructUrlPromise = (idTimePair) => new Promise((resolve, reject) => {
+        resolve(constructUrl(idTime.coinId, idTime.coinName, idTime.time))
+      })
+      constructUrlPromises.push(constructUrlPromise(idTime));
+    }
+    const urls = await Promise.all(constructUrlPromises);
+    fetchTasks.fetchCrypto(urls);
+    console.log(urls)
+  }
+
+  callFromIdTimes()
 
 })
 

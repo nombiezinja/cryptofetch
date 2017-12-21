@@ -24,13 +24,34 @@ const arrayOfTimes = async(coinId) => {
   return times
 }
 
-const arrayOfTimesForUpdate = async (coinId) => {
+const arrayOfIdAndTimes = async(coinId, coinName) => {
+
+  const startTime = await timeHelper.getStartTime(coinId)
+  const numberOfDays = await timeHelper.numberOfDays(startTime)
+  const interval = 86400;
+  const endTime = startTime - interval * numberOfDays;
+
+  let times = [];
+
+  i = startTime;
+  for (let i = startTime; i >= endTime; i -= interval) {
+    times.push({coinId: coinId, coinName: coinName, time: i});
+  }
+
+  return times
+}
+
+const arrayOfUrls = async(currencies) => {
+
+}
+
+const arrayOfTimesForUpdate = async(coinId) => {
 
   const startTime = await timeHelper.getStartTime(coinId);
   const endTime = await timeHelper.getEndTime(coinId);
   const interval = 86400;
-  
-  console.log('starttime', startTime, 'endtime',endTime)
+
+  console.log('starttime', startTime, 'endtime', endTime)
   let times = [];
 
   i = startTime;
@@ -41,20 +62,18 @@ const arrayOfTimesForUpdate = async (coinId) => {
 
 }
 
-const fetchCrypto = async(coinId, coinName) => {
+const fetchCrypto = async(fetchObjects) => {
 
-  let times = await arrayOfTimes(coinId);
-
-  const getData = async(time) => {
+  const getData = async(fetchObject) => {
     try {
-      const priceResponse = await fetch(`https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${time}`);
+      const priceResponse = await fetch(fetchObject.url);
       const priceJson = await priceResponse.json();
       console.log(priceJson, 'priceJson')
-      if (priceJson[coinId.toUpperCase()].USD == 0 && priceJson[coinId.toUpperCase()].BTC == 0) {
+      if (priceJson[fetchObject.coinId.toUpperCase()].USD == 0 && priceJson[fetchObject.coinId.toUpperCase()].BTC == 0) {
         return false;
       }
-      dbHelper.saveHistory(coinId, coinName, time, priceJson).then((id) => {
-        console.log(`Saved db entry ${id} for ${priceJson} and ${time}`)
+      dbHelper.saveHistory(fetchObject.coinId, fetchObject.coinName, fetchObject.time, priceJson).then((id) => {
+        console.log(`Saved db entry ${id} for ${priceJson} and ${fetchObject.time}`)
       })
     } catch (error) {
       console.log(error);
@@ -62,18 +81,18 @@ const fetchCrypto = async(coinId, coinName) => {
     return true;
   };
 
-  const getDataSeveralTimes = async(times) => {
-    if (times.length === 0) {
+  const getDataSeveralTimes = async(fetchObjects) => {
+    if (fetchObjects.length === 0) {
       return;
     }
-    var nextTime = times.shift();
+    var nextTime = fetchObjects.shift();
     var keepGoing = await getData(nextTime);
     if (keepGoing) {
-      setTimeout(() => getDataSeveralTimes(times), 5000);
+      setTimeout(() => getDataSeveralTimes(fetchObjects), 2000);
     }
   }
 
-  getDataSeveralTimes(times);
+  getDataSeveralTimes(fetchObjects);
 
 }
 
@@ -89,14 +108,14 @@ const fetchCryptoUpdate = (time, coinId) => {
       console.log(error);
     }
   };
-  
+
   return getData(time)
 };
 
-const updateWithOpen = async (coinId) => {
-  
+const updateWithOpen = async(coinId) => {
+
   const times = await arrayOfTimesForUpdate(coinId)
-  
+
   times.forEach((time, j) => {
     setTimeout(() => {
       console.log(time, coinId)
@@ -113,7 +132,7 @@ const updateWithOpen = async (coinId) => {
 
 };
 
-const updateWithClose = async (coinId) => {
+const updateWithClose = async(coinId) => {
 
   const times = await arrayOfTimesForUpdate(coinId);
 
@@ -121,7 +140,7 @@ const updateWithClose = async (coinId) => {
     setTimeout(() => {
       const closingHour = timeHelper.getUtcClosingTime(time)
       const closingTime = time + closingHour * 3600;
-      const fetchPromise = fetchCryptoUpdate(closingTime, coinId); 
+      const fetchPromise = fetchCryptoUpdate(closingTime, coinId);
       fetchPromise.then((result) => {
         dbHelper.updateHistoryWithClose(time, result, coinId).then((id) => {
           console.log(`db entry ${id} updated`)
@@ -165,5 +184,7 @@ module.exports = {
   fetchCryptoClose: fetchCryptoClose,
   updateWithOpen: updateWithOpen,
   updateWithClose: updateWithClose,
-  arrayOfTimes: arrayOfTimes
+  arrayOfTimes: arrayOfTimes,
+  arrayOfUrls: arrayOfUrls,
+  arrayOfIdAndTimes:arrayOfIdAndTimes
 };
