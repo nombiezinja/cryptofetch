@@ -62,6 +62,23 @@ module.exports = (knex) => {
         unix_time: response.time,
         coin_id: coinId
       }).returning('id');
+    },
+
+    checkDuplicate: (coinId, unixTime) => {
+      return knex.select()
+        .from('dailies')
+        .where({
+          coin_id: coinId,
+          unix_time: unixTime
+        });
+    },
+
+    deleteOldestDaily: (coinId) => {
+      return knex('dailies')
+      .orderBy('unix_time', 'asc')
+      .where({coin_id: coinId})
+      .limit(1)
+      .del()
     }
 
   }

@@ -8,13 +8,15 @@ const http = require('http');
 const knexLogger = require('knex-logger');
 const request = require('request');
 const moment = require('moment')
-
+const schedule = require('node-schedule');
 const app = express();
 const server = http.createServer(app);
 
-const miscHelper = require.main.require('./helpers/miscHelper')
-const dbHelper = require.main.require('./helpers/dbHelper')
-const timeHelper = require.main.require('./helpers/timeHelper')
+const miscHelper = require('./helpers/miscHelper')
+const dbHelper = require('./helpers/dbHelper')
+const timeHelper = require('./helpers/timeHelper')
+const hourlyFetch = require("./tasks/hourlyFetch");
+const dailyFetch = require("./tasks/dailyFetch");
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -28,8 +30,17 @@ app.set('view engine', 'ejs');
 
 app.use('/styles', express.static('../styles/'));
 
+const hourlySchedule = schedule.scheduleJob('0 * * * *', function(){
+  hourlyFetch.fetchHourlyData()
+});
+
+const dailySchedule = schedule.scheduleJob('0 12 * * *', function(){
+  dailyFetch.fetchDailyData()
+});
+
+
 app.get('/', (req, res) => {
-  res.render('home');
+  dailyFetch.fetchDailyData()
 });
 
 server.listen(8080, function listening() {

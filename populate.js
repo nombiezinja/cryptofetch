@@ -1,8 +1,8 @@
 const ENV = process.env.ENV || "development";
 const knexConfig = require.main.require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
-const historyFetch = require("./helpers/populate/history");
-const dailyFetch = require("./helpers/populate/daily");
+const historyFetch = require("./helpers/history");
+const dailyFetch = require("./helpers/daily");
 
 const currencies = [{
     coinId: 'btc',
@@ -11,7 +11,7 @@ const currencies = [{
   {
     coinId: 'eth',
     coinName: 'Ethereum'
-  }, 
+  },
   {
     coinId: 'neo',
     coinName: 'NEO'
@@ -51,10 +51,10 @@ const currencies = [{
 ]
 
 currencies.forEach((currency, j) => {
-    setTimeout(() => {
-      historyFetch.fetchHistory(currency.coinId, currency.coinName)
-    }, 2000 * (j + 1));
-  });
+  setTimeout(() => {
+    historyFetch.fetchHistory(currency.coinId, currency.coinName)
+  }, 2000 * (j + 1));
+});
 
 currencies.forEach((currency, j) => {
   setTimeout(() => {
