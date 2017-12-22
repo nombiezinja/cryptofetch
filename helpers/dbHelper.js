@@ -79,8 +79,26 @@ module.exports = (knex) => {
       .where({coin_id: coinId})
       .limit(1)
       .del()
-    }
+    },
 
+    retrieveHistories: (coinId) => {
+      return knex('histories')
+      .orderBy('unix_time', 'desc')
+      .where({coin_id: coinId})
+    },
+
+    retrieveDailies: (coinId) => {
+      return knex('dailies')
+      .orderBy('unix_time', 'desc')
+      .where({coin_id: coinId})
+    }, 
+    
+    retrieveCurrentHour: (coinId) => {
+      return knex('dailies')
+      .orderBy('unix_time', 'desc')
+      .where({coin_id: coinId})
+      .limit(1)
+    }
   }
 
 }

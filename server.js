@@ -12,9 +12,7 @@ const schedule = require('node-schedule');
 const app = express();
 const server = http.createServer(app);
 
-const miscHelper = require('./helpers/miscHelper')
-const dbHelper = require('./helpers/dbHelper')
-const timeHelper = require('./helpers/timeHelper')
+const dbHelper = require('./helpers/dbHelper')(knex)
 const hourlyFetch = require("./tasks/hourlyFetch");
 const dailyFetch = require("./tasks/dailyFetch");
 
@@ -30,17 +28,37 @@ app.set('view engine', 'ejs');
 
 app.use('/styles', express.static('../styles/'));
 
-const hourlySchedule = schedule.scheduleJob('0 * * * *', function(){
+const hourlySchedule = schedule.scheduleJob('0 * * * *', function () {
   hourlyFetch.fetchHourlyData()
 });
 
-const dailySchedule = schedule.scheduleJob('0 12 * * *', function(){
+const dailySchedule = schedule.scheduleJob('0 12 * * *', function () {
   dailyFetch.fetchDailyData()
 });
 
 
-app.get('/', (req, res) => {
-  dailyFetch.fetchDailyData()
+app.get('/history/:id', (req, res) => {
+  dbHelper.retrieveHistories(req.params.id).then((results) => {
+    res.send(results);
+  }).catch((error) => {
+    res.send(error)
+  })
+});
+
+app.get('/daily/:id', (req, res) => {
+  dbHelper.retrieveDailies(req.params.id).then((results) => {
+    res.send(results);
+  }).catch((error) => {
+    res.send(error)
+  })
+});
+
+app.get('/currenthour/:id', (req, res) => {
+  dbHelper.retrieveCurrentHour(req.params.id).then((results) => {
+    res.send(results);
+  }).catch((error) => {
+    res.send(error)
+  })
 });
 
 server.listen(8080, function listening() {

@@ -113,7 +113,6 @@ const fetchAndSave = async(coinId, coinName) => {
 
 };
 
-
 module.exports = {
   fetchHourlyData: fetchHourlyData
 };
