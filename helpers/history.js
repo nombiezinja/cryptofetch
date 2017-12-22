@@ -33,7 +33,7 @@ const fetchHistory = async(coinId, coinName) => {
       }
       dbHelper.saveHistory(usdJson.coinId,usdJson.coinName,entry).then((id) => {
         console.log(`Entry ${id} saved`);
-      });
+      }).catch((err) => {console.log(err)});
     });
   }
 
@@ -41,7 +41,7 @@ const fetchHistory = async(coinId, coinName) => {
     btcJson.data.forEach((entry) => {
       dbHelper.updateBtc(btcJson.coinId, entry).then((id) => {
         console.log(`Entry ${id} updated`);
-      });
+      }).catch((err) => {console.log(err)});
     });
   }
 

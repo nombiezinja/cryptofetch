@@ -30,7 +30,7 @@ const fetchDaily = async(coinId, coinName) => {
     usdJson.data.forEach((entry) => {
       dbHelper.saveDaily(usdJson.coinId, usdJson.coinName, entry).then((id) => {
         console.log(`Entry ${id} saved`);
-      })
+      }).catch((err) => {console.log(err)})
     })
   }
 
@@ -38,7 +38,7 @@ const fetchDaily = async(coinId, coinName) => {
     btcJson.data.forEach((entry) => {
       dbHelper.updateDailyBtc(btcJson.coinId, entry).then((id) => {
         console.log(`Entry ${id} updated`);
-      })
+      }).catch((err) => {console.log(err)})
     })
   }
 
