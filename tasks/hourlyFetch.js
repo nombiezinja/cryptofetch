@@ -91,7 +91,7 @@ const fetchAndSave = async(coinId, coinName) => {
             console.log(err)
           })
         } else {
-          console.log(`Skipping duplicate entry save for ${coinid}`)
+          console.log(`Skipping duplicate entry save for ${coinId}`)
         }
       }).catch((err) => {
         console.log(err)
