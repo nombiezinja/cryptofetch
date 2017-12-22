@@ -1,5 +1,5 @@
 const ENV = process.env.ENV || "development";
-const knexConfig = require("../knexfile");
+const knexConfig = require.main.require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
 const moment = require('moment-timezone');
 const fetch = require('node-fetch');

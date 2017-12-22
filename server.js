@@ -15,8 +15,8 @@ const server = http.createServer(app);
 const miscHelper = require.main.require('./helpers/miscHelper')
 const dbHelper = require.main.require('./helpers/dbHelper')
 const timeHelper = require.main.require('./helpers/timeHelper')
-const fetchTasks = require("./tasks/history");
-const dailyFetch = require("./tasks/daily");
+const fetchTasks = require("./tasks/populate/history");
+const dailyFetch = require("./tasks/populate/daily");
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -152,7 +152,8 @@ app.get('/24hr', (req, res) => {
       constructUrlPromises.push(constructUrlPromise(idTime));
     }
     const urls = await Promise.all(constructUrlPromises);
-    fetchTasks.fetchCrypto(urls);
+    console.log(urls.length)
+    dailyTasks.fetchCrypto(urls);
   }
 
   callFromIdTimes()
