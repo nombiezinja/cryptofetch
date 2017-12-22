@@ -6,7 +6,6 @@ exports.up = function(knex, Promise) {
     table.string('display_name');
     table.integer('unix_time');
     table.dateTime('utc_date_time');
-    table.string('market_cap');
     table.string('price_usd');
     table.string('price_btc');
     table.string('open_usd');
@@ -15,6 +14,10 @@ exports.up = function(knex, Promise) {
     table.string('close_btc');
     table.string('volume_usd');
     table.string('volume_btc');
+    table.string('high_usd');
+    table.string('low_usd');
+    table.string('high_btc');
+    table.string('low_btc');
     table.timestamp('created_at');
   }),
   knex.schema.createTable('dailies', function(table) {
@@ -23,7 +26,6 @@ exports.up = function(knex, Promise) {
     table.string('display_name');
     table.integer('unix_time');
     table.dateTime('utc_date_time');
-    table.string('market_cap');
     table.string('price_usd');
     table.string('price_btc');
     table.string('open_usd');
@@ -32,10 +34,13 @@ exports.up = function(knex, Promise) {
     table.string('close_btc');
     table.string('volume_btc');
     table.string('volume_usd');
+    table.string('high_usd');
+    table.string('low_usd');
+    table.string('high_btc');
+    table.string('low_btc');
     table.timestamp('created_at');
   })
   ]);
-  
 };
   
 exports.down = function(knex, Promise) {

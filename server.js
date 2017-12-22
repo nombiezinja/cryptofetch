@@ -81,39 +81,10 @@ const currencies = [{
 ]
 
 app.get('/history', (req, res) => {
-
-  let timePromises =  [];
-  let constructUrlPromises = [];
-
-  for (c of currencies) {
-    const timePromise = new Promise((resolve, reject) => {
-      resolve(historyFetch.arrayOfIdAndTimes(c.coinId, c.coinName))
-    })
-    timePromises.push(timePromise);
-  }
-  
-  const callFromIdTimes = async () => {
-    const idTimes = await Promise.all(timePromises);
-    const idTimesFlattened = await new Set(miscHelper.flatten(idTimes))
-    for (idTime of idTimesFlattened) { 
-      const constructUrlPromise = (idTimePair) => new Promise((resolve, reject) => {
-        resolve(miscHelper.constructUrl(idTime.coinId, idTime.coinName, idTime.time))
-      })
-      constructUrlPromises.push(constructUrlPromise(idTime));
-    }
-    const urls = await Promise.all(constructUrlPromises);
-    historyFetch.fetchCrypto(urls);
-  }
-
-  callFromIdTimes()
-
-})
-
-app.get('/update', (req, res) => {
   
   currencies.forEach((currency, j) => {
     setTimeout(() => {
-      historyFetch.fetchUpdate(currency.coinId)
+      historyFetch.fetchHistory(currency.coinId, currency.coinName)
     }, 2000 * (j + 1));
   });
 

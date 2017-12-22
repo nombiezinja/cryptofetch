@@ -4,33 +4,6 @@ const knexConfig = require("../knexfile");
 const knex = require("knex")(knexConfig[ENV]);
 const dbHelper = require.main.require('./helpers/dbHelper')(knex);
 
-const newYorkIsDst = (unixTime) => {
-  return moment.tz(moment(moment.unix(unixTime)).utc(), 'america_new_york').isDST()
-}
-
-const getUtcClosingTime = (unixTime) => {
-  if (newYorkIsDst(unixTime)){
-    return 21
-  } else {
-    return 22
-  }
-}
-
-const getUtcOpeningTime = (unixTime) => {
-  if (newYorkIsDst(unixTime)){
-    return 9
-  } else {
-    return 10
-  }
-}
-
-const getOpenTime = (unixTime) => {
-  const openingHour = timeHelper.getUtcOpeningTime(unixTime)
-  const openTime = unixTime - (12 - openingHour) * 85400
-  console.log ('ppening hour',openingHour, 'opentime', oopenTIme)
-  return openTime
-}
-
 const getStartTime = async (coinId) => {
   const promise = await dbHelper.getEarliestEntryTime(coinId)
   const startTime = promise[0] ? promise[0].unix_time - 86400 : moment(moment.utc().startOf('day')).unix();
@@ -49,9 +22,6 @@ const numberOfDays = (startTime) => {
 }
 
 module.exports = {
-  getUtcClosingTime: getUtcClosingTime,
-  getUtcOpeningTime: getUtcOpeningTime, 
-  getOpenTime: getOpenTime, 
   getStartTime: getStartTime, 
   getEndTime: getEndTime,
   numberOfDays: numberOfDays
