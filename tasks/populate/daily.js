@@ -7,67 +7,44 @@ const fetch = require('node-fetch');
 const dbHelper = require.main.require('./helpers/dbHelper')(knex);
 const timeHelper = require.main.require('./helpers/timeHelper')
 
-const arrayOfIdAndTimes = async(coinId, coinName) => {
-
-  const startTime = moment(moment.utc()).unix()
-
-  const interval = 3600;
-  const endTime = startTime - 86400;
-
-  let times = [];
-
-  i = startTime;
-  for (let i = startTime; i >= endTime; i -= interval) {
-    times.push({
+const getData = async(coinId, coinName, currency) => {
+  try {
+    const response = await fetch(`https://min-api.cryptocompare.com/data/histohour?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=24&aggregate=1&e=CCCAGG`);
+    const json = await response.json();
+    return {
       coinId: coinId,
       coinName: coinName,
-      time: i
-    });
+      data: json.Data
+    };
+  } catch (error) {
+    console.log(error);
   }
-  return times
-}
+};
 
-const fetchCrypto = async(fetchObjects) => {
+const fetchDaily = async(coinId, coinName) => {
 
-  const getData = async(fetchObject) => {
-    try {
-      const priceResponse = await fetch(fetchObject.url);
-      const priceJson = await priceResponse.json();
-      console.log(priceJson, 'priceJson')
-      if (priceJson[fetchObject.coinId.toUpperCase()].USD == 0 && priceJson[fetchObject.coinId.toUpperCase()].BTC == 0) {
-        return false;
-      }
-      const duplicatePromise = await dbHelper.checkDuplicate(fetchObject.coinId, fetchObject.time)
-      if (!duplicatePromise[0]) {
-        dbHelper.saveDaily(fetchObject.coinId, fetchObject.coinName, fetchObject.time, priceJson).then((id) => {
-          console.log(`Saved db entry ${id} for ${priceJson} and ${fetchObject.time}`)
-        })
-      } else {
-        console.log('Duplicate found, skipping save')
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    return true;
-  };
+  const btcJson = await getData(coinId, coinName, 'BTC');
+  const usdJson = await getData(coinId, coinName, 'USD');
 
-  const getDataSeveralTimes = async(fetchObjects) => {
-    if (fetchObjects.length === 0) {
-      return;
-    }
-    var nextTime = fetchObjects.shift();
-    var keepGoing = await getData(nextTime);
-    if (keepGoing) {
-      setTimeout(() => getDataSeveralTimes(fetchObjects), 1000);
-    }
+  if (usdJson.data) {
+    usdJson.data.forEach((entry) => {
+      dbHelper.saveDaily(usdJson.coinId, usdJson.coinName, entry).then((id) => {
+        console.log(`Entry ${id} saved`);
+      })
+    })
   }
 
-  getDataSeveralTimes(fetchObjects);
+  if (btcJson.data) {
+    btcJson.data.forEach((entry) => {
+      dbHelper.updateDailyBtc(btcJson.coinId, entry).then((id) => {
+        console.log(`Entry ${id} updated`);
+      })
+    })
+  }
 
-}
+};
 
 
 module.exports = {
-  arrayOfIdAndTimes: arrayOfIdAndTimes,
-  fetchCrypto: fetchCrypto
+  fetchDaily: fetchDaily
 };

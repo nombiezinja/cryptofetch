@@ -15,7 +15,7 @@ const server = http.createServer(app);
 const miscHelper = require.main.require('./helpers/miscHelper')
 const dbHelper = require.main.require('./helpers/dbHelper')
 const timeHelper = require.main.require('./helpers/timeHelper')
-const fetchTasks = require("./tasks/populate/history");
+const historyFetch = require("./tasks/populate/history");
 const dailyFetch = require("./tasks/populate/daily");
 
 app.use(bodyParser.urlencoded({
@@ -86,9 +86,8 @@ app.get('/history', (req, res) => {
   let constructUrlPromises = [];
 
   for (c of currencies) {
-    console.log(c.coinName)
     const timePromise = new Promise((resolve, reject) => {
-      resolve(fetchTasks.arrayOfIdAndTimes(c.coinId, c.coinName))
+      resolve(historyFetch.arrayOfIdAndTimes(c.coinId, c.coinName))
     })
     timePromises.push(timePromise);
   }
@@ -103,7 +102,7 @@ app.get('/history', (req, res) => {
       constructUrlPromises.push(constructUrlPromise(idTime));
     }
     const urls = await Promise.all(constructUrlPromises);
-    fetchTasks.fetchCrypto(urls);
+    historyFetch.fetchCrypto(urls);
   }
 
   callFromIdTimes()
@@ -114,37 +113,19 @@ app.get('/update', (req, res) => {
   
   currencies.forEach((currency, j) => {
     setTimeout(() => {
-      fetchTasks.update(currency.coinId)
+      historyFetch.fetchUpdate(currency.coinId)
     }, 2000 * (j + 1));
   });
 
 })
 
 app.get('/24hr', (req, res) => {
-  let timePromises =  [];
-  let constructUrlPromises = [];
 
-  for (c of currencies) {
-    const timePromise = new Promise((resolve, reject) => {
-      resolve(dailyFetch.arrayOfIdAndTimes(c.coinId, c.coinName))
-    })
-    timePromises.push(timePromise);
-  }
-  
-  const callFromIdTimes = async () => {
-    const idTimes = await Promise.all(timePromises);
-    const idTimesFlattened = await new Set(miscHelper.flatten(idTimes))
-    for (idTime of idTimesFlattened) { 
-      const constructUrlPromise = (idTimePair) => new Promise((resolve, reject) => {
-        resolve(miscHelper.constructUrl(idTime.coinId, idTime.coinName, idTime.time))
-      })
-      constructUrlPromises.push(constructUrlPromise(idTime));
-    }
-    const urls = await Promise.all(constructUrlPromises);
-    dailyFetch.fetchCrypto(urls);
-  }
-
-  callFromIdTimes()
+  currencies.forEach((currency, j) => {
+    setTimeout(() => {
+      dailyFetch.fetchDaily(currency.coinId, currency.coinName)
+    }, 2000 * (j + 1));
+  });
 
 })
 

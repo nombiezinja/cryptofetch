@@ -13,7 +13,8 @@ exports.up = function(knex, Promise) {
     table.string('open_btc');
     table.string('close_usd');
     table.string('close_btc');
-    table.string('volume');
+    table.string('volume_usd');
+    table.string('volume_btc');
     table.timestamp('created_at');
   }),
   knex.schema.createTable('dailies', function(table) {
@@ -29,7 +30,8 @@ exports.up = function(knex, Promise) {
     table.string('open_btc');
     table.string('close_usd');
     table.string('close_btc');
-    table.string('volume');
+    table.string('volume_btc');
+    table.string('volume_usd');
     table.timestamp('created_at');
   })
   ]);

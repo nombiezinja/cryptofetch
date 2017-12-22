@@ -5,12 +5,12 @@ const moment = require('moment-timezone');
 const fetch = require('node-fetch');
 
 const dbHelper = require.main.require('./helpers/dbHelper')(knex);
-const timeHelper = require.main.require('./helpers/timeHelper')
+const timeHelper = require.main.require('./helpers/timeHelper');
 
 const arrayOfTimes = async(coinId) => {
 
-  const startTime = await timeHelper.getStartTime(coinId)
-  const numberOfDays = await timeHelper.numberOfDays(startTime)
+  const startTime = await timeHelper.getStartTime(coinId);
+  const numberOfDays = await timeHelper.numberOfDays(startTime);
   const interval = 86400;
   const endTime = startTime - interval * numberOfDays;
 
@@ -19,16 +19,16 @@ const arrayOfTimes = async(coinId) => {
   i = startTime;
   for (let i = startTime; i >= endTime; i -= interval) {
     times.push(i);
-  }
+  };
 
-  return times
+  return times;
 }
 
 const arrayOfIdAndTimes = async(coinId, coinName) => {
 
-  const startTime = await timeHelper.getStartTime(coinId)
+  const startTime = await timeHelper.getStartTime(coinId);
 
-  const numberOfDays = await timeHelper.numberOfDays(startTime)
+  const numberOfDays = await timeHelper.numberOfDays(startTime);
   const interval = 86400;
   const endTime = startTime - interval * numberOfDays;
 
@@ -41,26 +41,19 @@ const arrayOfIdAndTimes = async(coinId, coinName) => {
       coinName: coinName,
       time: i
     });
-  }
+  };
 
-  return times
+  return times;
 }
 
-const arrayOfTimesForUpdate = async(coinId) => {
+const numberOfDaysForUpdate = async(coinId) => {
 
   const startTime = await timeHelper.getStartTime(coinId);
   const endTime = await timeHelper.getEndTime(coinId);
   const interval = 86400;
 
-  console.log('starttime', startTime, 'endtime', endTime)
-  let times = [];
-
-  i = startTime;
-  for (let i = startTime; i <= endTime; i += interval) {
-    times.push(i);
-  }
-  return times
-
+  const days = (endTime - startTime) / interval;
+  return days;
 }
 
 const fetchCrypto = async(fetchObjects) => {
@@ -69,17 +62,17 @@ const fetchCrypto = async(fetchObjects) => {
     try {
       const priceResponse = await fetch(fetchObject.url);
       const priceJson = await priceResponse.json();
-      console.log(priceJson, 'priceJson')
+      console.log(priceJson, 'priceJson');
       if (priceJson[fetchObject.coinId.toUpperCase()].USD == 0 && priceJson[fetchObject.coinId.toUpperCase()].BTC == 0) {
         return false;
       }
-      const duplicatePromise = await dbHelper.checkDuplicate(fetchObject.coinId, fetchObject.time)
+      const duplicatePromise = await dbHelper.checkDuplicate(fetchObject.coinId, fetchObject.time);
       if (!duplicatePromise[0]) {
         dbHelper.saveHistory(fetchObject.coinId, fetchObject.coinName, fetchObject.time, priceJson).then((id) => {
-          console.log(`Saved db entry ${id} for ${priceJson} and ${fetchObject.time}`)
-        })
+          console.log(`Saved db entry ${id} for ${priceJson} and ${fetchObject.time}`);
+        });
       } else {
-        console.log('Duplicate found, skipping save')
+        console.log('Duplicate found, skipping save');
       }
     } catch (error) {
       console.log(error);
@@ -102,68 +95,52 @@ const fetchCrypto = async(fetchObjects) => {
 
 }
 
-const fetchCryptoUpdate = (time, coinId) => {
+const getData = (days, coinId, currency) => {
 
-  const getData = async(time) => {
+  const getData = async() => {
     try {
-      const response = await fetch(`https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${time}`);
+      const response = await fetch(`https://min-api.cryptocompare.com/data/histoday?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=${days}&aggregate=1&e=CCCAGG`);
       const json = await response.json();
-      console.log('json', json)
-      return json
+      return {
+        coinId: coinId,
+        data: json.Data
+      };
     } catch (error) {
       console.log(error);
     }
   };
 
-  return getData(time)
+  return getData();
 };
 
-const updateWithOpen = async(coinId) => {
+const fetchUpdate = async(coinId) => {
 
-  const times = await arrayOfTimesForUpdate(coinId)
+  const days = await numberOfDaysForUpdate(coinId);
+  const updateBtcJson = await getData(days, coinId, 'BTC');
+  const updateUsdJson = await getData(days, coinId, 'USD');
 
-  times.forEach((time, j) => {
-    setTimeout(() => {
-      console.log(time, coinId)
-      const openingHour = timeHelper.getUtcOpeningTime(time);
-      const openTime = time - (12 - openingHour) * 3600;
-      const fetchPromise = fetchCryptoUpdate(openTime, coinId);
-      fetchPromise.then((result) => {
-        dbHelper.updateHistoryWithOpen(time, result, coinId).then((id) => {
-          console.log(`db entry ${id} updated`);
-        });
+  if (updateBtcJson.data) {
+    updateBtcJson.data.forEach((entry) => {
+      dbHelper.updateBtc(updateBtcJson.coinId, entry).then((id) => {
+        console.log(`Entry ${id} updated`);
       })
-    }, 3000 * (j + 1));
-  });
+    })
+  }
 
-};
-
-const fetchCryptoClose = (recordId, coinId, time) => {
-  closingHour = timeHelper.getUtcClosingTime(i)
-  closeTime = time + closingHour * 86400 - 1
-
-  const getData = async(time) => {
-    try {
-      const closeResponse = await fetch(`https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coinId.toUpperCase()}&tsyms=BTC,USD&ts=${closeTime}`);
-      const closeJson = await closeResponse.json();
-      dbHelper.updateHistoryWithClose(recordId, coinId, closeJson).then(() => {
-        console.log(`Updated db entry ${id}`)
+  if (updateUsdJson.data) {
+    updateUsdJson.data.forEach((entry) => {
+      dbHelper.updateUsd(updateUsdJson.coinId, entry).then((id) => {
+        console.log(`Entry ${id} updated`);
       })
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  getData(time);
+    })
+  }
 
 };
+
 
 module.exports = {
   fetchCrypto: fetchCrypto,
-  fetchCryptoUpdate: fetchCryptoUpdate,
-  fetchCryptoClose: fetchCryptoClose,
-  updateWithOpen: updateWithOpen,
-  updateWithClose: updateWithClose,
+  fetchUpdate: fetchUpdate,
   arrayOfTimes: arrayOfTimes,
   arrayOfIdAndTimes: arrayOfIdAndTimes
 };

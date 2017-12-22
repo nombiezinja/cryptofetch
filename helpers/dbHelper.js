@@ -16,26 +16,28 @@ module.exports = (knex) => {
       }).returning('id');
     },
 
-    updateHistoryWithOpen: (unixTime, openResponse, coinId) => {
-      console.log('openresponse', openResponse,'coinid', coinId, unixTime, 'unixtime')
+    updateUsd: (coinId, response) => {
+      console.log('response', response,'coinid', coinId)
       return knex.table('histories')
         .update({
-          open_usd: openResponse[coinId.toUpperCase()].USD,
-          open_btc: openResponse[coinId.toUpperCase()].BTC
+          open_usd: response.open,
+          close_usd: response.close,
+          volume_usd: response.volumeto, 
         }).where({
-          unix_time: unixTime, 
+          unix_time: response.time, 
           coin_id: coinId
         }).returning('id');
     },
 
-    updateHistoryWithClose: (unixTime, closeResponse, coinId) => {
-      console.log('closeresponse', closeResponse,'coinid', coinId, unixTime, 'unixtime')
+    updateBtc: (coinId, response) => {
+      console.log('response', response,'coinid', coinId)
       return knex.table('histories')
         .update({
-          close_usd: closeResponse[coinId.toUpperCase()].USD,
-          close_btc: closeResponse[coinId.toUpperCase()].BTC
+          open_btc: response.open,
+          close_btc: response.close,
+          volume_btc: response.volumeto
         }).where({
-          unix_time: unixTime, 
+          unix_time: response.time, 
           coin_id: coinId
         }).returning('id');
     },
@@ -69,21 +71,31 @@ module.exports = (knex) => {
         })
     },
 
-    saveDaily: (coinId, coinName, time, priceResponse) => {
-      console.log('priceResponse',priceResponse);
-      console.log(moment.utc(moment.unix(time)))
+    saveDaily: (coinId, coinName, response) => {
       return knex.table('dailies').insert({
         coin_id: coinId,
         display_name: coinName,
-        unix_time: time,
-        utc_date_time: moment.utc(moment.unix(time)),
-        price_usd: priceResponse[coinId.toUpperCase()].USD,
-        price_btc: priceResponse[coinId.toUpperCase()].BTC,
+        unix_time: response.time,
+        utc_date_time: moment.utc(moment.unix(response.time)),
+        price_usd: response.open,
+        open_usd: response.open,
+        close_usd: response.close,
+        volume_usd: response.volumeto,
         created_at: moment.utc()
       }).returning('id');
+    },
+
+    updateDailyBtc: (coinId, response) => {
+      return knex.table('dailies').update({
+        price_btc: response.open, 
+        open_btc: response.open, 
+        close_btc: response.close,
+        volume_btc: response.volumeto
+      }).where({
+        unix_time: response.time,
+        coin_id: coinId
+      }).returning('id');
     }
-
-
 
   }
 
