@@ -24,10 +24,50 @@ const arrayOfIdAndTimes = async(coinId, coinName) => {
       time: i
     });
   }
-  console.log(times)
   return times
 }
 
+const fetchCrypto = async(fetchObjects) => {
+
+  const getData = async(fetchObject) => {
+    try {
+      const priceResponse = await fetch(fetchObject.url);
+      const priceJson = await priceResponse.json();
+      console.log(priceJson, 'priceJson')
+      if (priceJson[fetchObject.coinId.toUpperCase()].USD == 0 && priceJson[fetchObject.coinId.toUpperCase()].BTC == 0) {
+        return false;
+      }
+      const duplicatePromise = await dbHelper.checkDuplicate(fetchObject.coinId, fetchObject.time)
+      if (!duplicatePromise[0]) {
+        dbHelper.saveDaily(fetchObject.coinId, fetchObject.coinName, fetchObject.time, priceJson).then((id) => {
+          console.log(`Saved db entry ${id} for ${priceJson} and ${fetchObject.time}`)
+        })
+      } else {
+        console.log('Duplicate found, skipping save')
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  };
+
+  const getDataSeveralTimes = async(fetchObjects) => {
+    if (fetchObjects.length === 0) {
+      return;
+    }
+    var nextTime = fetchObjects.shift();
+    var keepGoing = await getData(nextTime);
+    if (keepGoing) {
+      setTimeout(() => getDataSeveralTimes(fetchObjects), 1000);
+    }
+  }
+
+  getDataSeveralTimes(fetchObjects);
+
+}
+
+
 module.exports = {
-  arrayOfIdAndTimes: arrayOfIdAndTimes
+  arrayOfIdAndTimes: arrayOfIdAndTimes,
+  fetchCrypto: fetchCrypto
 };

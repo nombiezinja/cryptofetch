@@ -110,32 +110,21 @@ app.get('/history', (req, res) => {
 
 })
 
-app.get('/open', (req, res) => {
+app.get('/update', (req, res) => {
   
   currencies.forEach((currency, j) => {
     setTimeout(() => {
-      fetchTasks.updateWithOpen(currency.coinId)
+      fetchTasks.update(currency.coinId)
     }, 2000 * (j + 1));
   });
 
 })
-
-app.get('/close', (req, res) => {
-
-  currencies.forEach((currency, j) => {
-    setTimeout(() => {
-      fetchTasks.updateWithClose(currency.coinId)
-    }, 5000 * (j + 1));
-  });
-
-});
 
 app.get('/24hr', (req, res) => {
   let timePromises =  [];
   let constructUrlPromises = [];
 
   for (c of currencies) {
-    console.log(c.coinName)
     const timePromise = new Promise((resolve, reject) => {
       resolve(dailyFetch.arrayOfIdAndTimes(c.coinId, c.coinName))
     })
@@ -152,8 +141,7 @@ app.get('/24hr', (req, res) => {
       constructUrlPromises.push(constructUrlPromise(idTime));
     }
     const urls = await Promise.all(constructUrlPromises);
-    console.log(urls.length)
-    dailyTasks.fetchCrypto(urls);
+    dailyFetch.fetchCrypto(urls);
   }
 
   callFromIdTimes()

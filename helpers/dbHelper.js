@@ -67,7 +67,22 @@ module.exports = (knex) => {
           coin_id: coinId,
           unix_time: unixTime
         })
+    },
+
+    saveDaily: (coinId, coinName, time, priceResponse) => {
+      console.log('priceResponse',priceResponse);
+      console.log(moment.utc(moment.unix(time)))
+      return knex.table('dailies').insert({
+        coin_id: coinId,
+        display_name: coinName,
+        unix_time: time,
+        utc_date_time: moment.utc(moment.unix(time)),
+        price_usd: priceResponse[coinId.toUpperCase()].USD,
+        price_btc: priceResponse[coinId.toUpperCase()].BTC,
+        created_at: moment.utc()
+      }).returning('id');
     }
+
 
 
   }

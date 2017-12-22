@@ -138,24 +138,6 @@ const updateWithOpen = async(coinId) => {
 
 };
 
-const updateWithClose = async(coinId) => {
-
-  const times = await arrayOfTimesForUpdate(coinId);
-
-  times.forEach((time, j) => {
-    setTimeout(() => {
-      const closingHour = timeHelper.getUtcClosingTime(time)
-      const closingTime = time + closingHour * 3600;
-      const fetchPromise = fetchCryptoUpdate(closingTime, coinId);
-      fetchPromise.then((result) => {
-        dbHelper.updateHistoryWithClose(time, result, coinId).then((id) => {
-          console.log(`db entry ${id} updated`)
-        });
-      })
-    }, 3000 * (j + 1));
-  })
-}
-
 const fetchCryptoClose = (recordId, coinId, time) => {
   closingHour = timeHelper.getUtcClosingTime(i)
   closeTime = time + closingHour * 86400 - 1
