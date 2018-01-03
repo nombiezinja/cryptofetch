@@ -52,13 +52,14 @@ const currencies = [{
     coinName: 'Bitcoin Cash'
   }
 ]
-const fetchDailyData = () => {
+const updateDailyData = () => {
   currencies.forEach((currency, j) => {
     setTimeout(() => {
       fetchAndSave(currency.coinId, currency.coinName)
     }, 2000 * (j + 1));
   });
 }
+
 const getData = async(coinId, coinName, currency) => {
   try {
     const response = await fetch(`https://min-api.cryptocompare.com/data/histohour?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=1&aggregate=1&e=CCCAGG`);
@@ -75,20 +76,12 @@ const getData = async(coinId, coinName, currency) => {
 
 const fetchAndSave = async(coinId, coinName) => {
 
-  const usdJson = await getData(coinId, coinName, 'USD');
+  const btcJson = await getData(coinId, coinName, 'BTC');
 
-  if (usdJson.data) {
-    usdJson.data.forEach((entry) => {
-      dbHelper.checkDuplicate(coinId, entry.time).then((result) => {
-        if (!result[0]) {
-          dbHelper.saveHistory(usdJson.coinId, usdJson.coinName, entry).then((id) => {
-            console.log(`Entry ${id} saved for ${coinId} at time ${moment.unix(entry.time)}`);
-          }).catch((err) => {
-            console.log(err)
-          })
-        } else {
-          console.log(`Skipping duplicate entry save for ${coinId}`)
-        }
+  if (btcJson.data) {
+    btcJson.data.forEach((entry) => {
+      dbHelper.updateBtc(btcJson.coinId, entry).then((id) => {
+        console.log(`Entry ${id} updated for ${coinId} at time ${moment.unix(entry.time)} with BTC info`);
       }).catch((err) => {
         console.log(err)
       })
@@ -98,5 +91,5 @@ const fetchAndSave = async(coinId, coinName) => {
 };
 
 module.exports = {
-  fetchDailyData: fetchDailyData
+  updateDailyData: updateDailyData
 };

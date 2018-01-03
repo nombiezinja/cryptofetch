@@ -3,6 +3,7 @@ const moment = require('moment')
 module.exports = (knex) => {
   return {
     saveHistory: (coinId, coinName, response) => {
+      console.log(response)
       return knex.table('histories').insert({
         coin_id: coinId,
         display_name: coinName,
@@ -13,7 +14,7 @@ module.exports = (knex) => {
         open_usd: response.open,
         close_usd: response.close,
         high_usd: response.high,
-        close_usd: response.close,
+        low_usd: response.low,
         created_at: moment.utc()
       }).returning('id');
     },
