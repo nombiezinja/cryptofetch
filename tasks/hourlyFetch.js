@@ -78,6 +78,7 @@ const getData = async(coinId, coinName, currency) => {
 
 const fetchAndSave = async(coinId, coinName) => {
 
+  const btcJson = await getData(coinId, coinName, 'BTC');
   const usdJson = await getData(coinId, coinName, 'USD');
 
   if (usdJson.data) {
@@ -92,6 +93,16 @@ const fetchAndSave = async(coinId, coinName) => {
         } else {
           console.log(`Skipping duplicate entry save for ${coinId}`)
         }
+      }).catch((err) => {
+        console.log(err)
+      })
+    })
+  };
+
+  if (btcJson.data) {
+    btcJson.data.forEach((entry) => {
+      dbHelper.updateDailyBtc(btcJson.coinId, entry).then((id) => {
+        console.log(`Entry ${id} saved for ${coinId} at time ${moment.unix(entry.time)} with BTC info`);
       }).catch((err) => {
         console.log(err)
       })
