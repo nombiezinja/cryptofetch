@@ -85,6 +85,7 @@ const fetchAndSave = async(coinId, coinName) => {
     usdJson.data.forEach((entry) => {
       dbHelper.checkDuplicate(coinId, entry.time).then((result) => {
         if (!result[0]) {
+          console.log(result)
           dbHelper.saveDaily(usdJson.coinId, usdJson.coinName, entry).then((id) => {
             console.log(`Entry ${id} saved for ${coinId} at time ${moment.unix(entry.time)}`);
           }).catch((err) => {
@@ -109,7 +110,9 @@ const fetchAndSave = async(coinId, coinName) => {
     })
   };
 
-  const oldestEntry = await dbHelper.deleteOldestDaily(coinId)
+  const oldestEntry = dbHelper.deleteOldestDaily(coinId).then(() => {
+    console.log(`Deletest oldest ${coinId} entry`)
+  })
 
 };
 

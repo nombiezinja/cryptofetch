@@ -37,6 +37,9 @@ const dailySchedule = schedule.scheduleJob('0 12 * * *', function () {
   dailyFetch.fetchDailyData()
 });
 
+app.get('/test', (req, res) => {
+  hourlyFetch.fetchHourlyData()
+})
 
 app.get('/history/:id', (req, res) => {
   dbHelper.retrieveHistories(req.params.id).then((results) => {
