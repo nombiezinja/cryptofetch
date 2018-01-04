@@ -28,11 +28,12 @@ app.set('view engine', 'ejs');
 
 app.use('/styles', express.static('../styles/'));
 
-const hourlySchedule = schedule.scheduleJob('1 * * * *', function () {
+//scheduled at 3 minutes past hour to allow data delay from CryptoCompare api
+const hourlySchedule = schedule.scheduleJob('3 * * * *', function () {
   hourlyFetch.fetchHourlyData()
 });
 
-const dailySchedule = schedule.scheduleJob('1 12 * * *', function () {
+const dailySchedule = schedule.scheduleJob('3 12 * * *', function () {
   dailyFetch.fetchDailyData()
 });
 

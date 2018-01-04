@@ -74,11 +74,11 @@ module.exports = (knex) => {
         });
     },
 
-    deleteOldestDaily: (coinId) => {
-      return knex.raw(`delete from dailies 
-        where ctid in (select ctid from dailies where coin_id = 'btc' order by unix_time asc limit 1);
-      `)
-    },
+    // deleteOldestDaily: (coinId) => {
+    //   return knex.raw(`delete from dailies 
+    //     where ctid in (select ctid from dailies where coin_id = 'btc' order by unix_time asc limit 1);
+    //   `)
+    // },
 
 
     oldestDaily: (coinId) => {
@@ -87,7 +87,12 @@ module.exports = (knex) => {
       .where({coin_id: coinId})
       .limit(1)
     },
-
+    
+    deleteOldest: (id) => {
+      return knex('dailies')
+      .where({id: id})
+      .del()
+    },
 
     retrieveHistories: (coinId) => {
       return knex('histories')

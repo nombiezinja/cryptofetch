@@ -84,6 +84,15 @@ const fetchAndSave = async(coinId, coinName) => {
         if (!result[0]) {
           dbHelper.saveHistory(usdJson.coinId, usdJson.coinName, entry).then((id) => {
             console.log(`Entry ${id} saved for ${coinId} at time ${moment.unix(entry.time)}`);
+            if (btcJson.data) {
+              btcJson.data.forEach((entry) => {
+                dbHelper.updateBtc(btcJson.coinId, entry).then((id) => {
+                  console.log(`Entry ${id} updated for ${coinId} at time ${moment.unix(entry.time)} with BTC info`);
+                }).catch((err) => {
+                  console.log(err)
+                })
+              })
+            };
           }).catch((err) => {
             console.log(err)
           })
@@ -96,15 +105,6 @@ const fetchAndSave = async(coinId, coinName) => {
     })
   };
 
-  if (btcJson.data) {
-    btcJson.data.forEach((entry) => {
-      dbHelper.updateBtc(btcJson.coinId, entry).then((id) => {
-        console.log(`Entry ${id} updated for ${coinId} at time ${moment.unix(entry.time)} with BTC info`);
-      }).catch((err) => {
-        console.log(err)
-      })
-    })
-  };
 
 };
 
