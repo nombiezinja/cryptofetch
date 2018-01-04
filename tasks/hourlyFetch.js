@@ -92,7 +92,11 @@ const fetchAndSave = async(coinId, coinName) => {
               console.log("Oldest entry:", result)
               dbHelper.deleteOldest(result[0].id).then(() => {
                 console.log(`Oldest entry deleted for ${coinId}`)
+              }).catch((err) => {
+                console.log(err)
               })
+            }).catch((err) => {
+              console.log(err)
             })
             if (btcJson.data) {
               btcJson.data.forEach((entry) => {
