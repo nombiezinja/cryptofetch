@@ -85,6 +85,8 @@ const fetchAndSave = async(coinId, coinName) => {
     console.log("usdJson", usdJson.data)
     usdJson.data.forEach((entry) => {
       dbHelper.checkDuplicate(coinId, entry.time).then((result) => {
+        console.log("checking duplicates", result)
+        console.log("result[0]", result[0])
         if (!result[0]) {
           console.log(result)
           dbHelper.saveDaily(usdJson.coinId, usdJson.coinName, entry).then((id) => {
