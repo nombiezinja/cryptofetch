@@ -32,8 +32,7 @@ const hourlySchedule = schedule.scheduleJob('1 * * * *', function () {
   hourlyFetch.fetchHourlyData()
 });
 
-
-const dailySchedule = schedule.scheduleJob('0 12 * * *', function () {
+const dailySchedule = schedule.scheduleJob('1 12 * * *', function () {
   dailyFetch.fetchDailyData()
 });
 
