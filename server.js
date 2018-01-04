@@ -28,7 +28,7 @@ app.set('view engine', 'ejs');
 
 app.use('/styles', express.static('../styles/'));
 
-const hourlySchedule = schedule.scheduleJob('0 * * * *', function () {
+const hourlySchedule = schedule.scheduleJob('1 * * * *', function () {
   hourlyFetch.fetchHourlyData()
 });
 

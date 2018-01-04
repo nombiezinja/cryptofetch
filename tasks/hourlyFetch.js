@@ -99,7 +99,7 @@ const fetchAndSave = async(coinId, coinName) => {
       })
     })
   };
-
+    
   if (btcJson.data) {
     btcJson.data.forEach((entry) => {
       dbHelper.updateDailyBtc(btcJson.coinId, entry).then((id) => {
@@ -111,7 +111,7 @@ const fetchAndSave = async(coinId, coinName) => {
   };
 
   const oldestEntry = dbHelper.deleteOldestDaily(coinId).then(() => {
-    console.log(`Deletest oldest ${coinId} entry`)
+    console.log(`Deleting oldest ${coinId} entry`)
   })
 
 };
