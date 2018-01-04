@@ -51,7 +51,7 @@ const currencies = [{
 ]
 
 // currencies.forEach((currency, j) => {
-//   setTimeout(() => {
+//   setTimeout(() => {                           
 //     historyFetch.fetchHistory(currency.coinId, currency.coinName)
 //   }, 2000 * (j + 1));
 // });

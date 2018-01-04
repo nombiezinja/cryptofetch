@@ -9,7 +9,7 @@ const timeHelper = require.main.require('./helpers/timeHelper')
 
 const getData = async(coinId, coinName, currency) => {
   try {
-    const response = await fetch(`https://min-api.cryptocompare.com/data/histohour?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=24&aggregate=1&e=CCCAGG`);
+    const response = await fetch(`https://min-api.cryptocompare.com/data/histohour?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=168&aggregate=1&e=CCCAGG`);
     const json = await response.json();
     return {
       coinId: coinId,

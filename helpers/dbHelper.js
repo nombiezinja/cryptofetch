@@ -104,7 +104,6 @@ module.exports = (knex) => {
       return knex('dailies')
       .orderBy('unix_time', 'desc')
       .where({coin_id: coinId})
-      .limit(24)
     }, 
     
     retrieveCurrentHour: (coinId) => {
