@@ -16,8 +16,8 @@ const app = express();
 const server = http.createServer(app);
 
 const dbHelper = require('./helpers/dbHelper')(knex)
-const hourlyFetch = require("./tasks/hourlyFetch");
-const dailyFetch = require("./tasks/dailyFetch");
+const hourlyFetch = require("./lib/tasks/hourlyFetch");
+const dailyFetch = require("./lib/tasks/dailyFetch");
 
 app.use(bodyParser.urlencoded({
   extended: true
