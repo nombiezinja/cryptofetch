@@ -1,4 +1,7 @@
+require('dotenv').config({silent: true})
+
 const ENV = process.env.ENV || "development";
+const port = process.env.PORT || 8080;
 const express = require('express');
 const bodyParser = require('body-parser');
 const knexConfig = require("./knexfile");
@@ -65,6 +68,6 @@ app.get('/currenthour/:id', (req, res) => {
   })
 });
 
-server.listen(8080, function listening() {
+server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);
 });
