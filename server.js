@@ -1,6 +1,6 @@
 require('dotenv').config({silent: true})
 
-var ENV = process.env.NODE_ENV 
+const ENV = process.env.NODE_ENV 
 const port = process.env.PORT || 8080;
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -18,6 +18,11 @@ const server = http.createServer(app);
 const dbHelper = require('./helpers/dbHelper')(knex)
 const hourlyFetch = require("./lib/tasks/hourlyFetch");
 const dailyFetch = require("./lib/tasks/dailyFetch");
+
+const historyRoutes = require("./lib/routes/history");
+const dailyRoutes = require("./lib/routes/daily");
+const currentHourRoutes = require("./lib/routes/currentHour");
+
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -38,33 +43,9 @@ const dailySchedule = schedule.scheduleJob('3 12 * * *', function () {
   dailyFetch.fetchDailyData()
 });
 
-app.get('/test', (req, res) => {
-  hourlyFetch.fetchHourlyData()
-})
-
-app.get('/history/:id', (req, res) => {
-  dbHelper.retrieveHistories(req.params.id).then((results) => {
-    res.send(results);
-  }).catch((error) => {
-    res.send(error)
-  })
-});
-
-app.get('/daily/:id', (req, res) => {
-  dbHelper.retrieveDailies(req.params.id).then((results) => {
-    res.send(results);
-  }).catch((error) => {
-    res.send(error)
-  })
-});
-
-app.get('/currenthour/:id', (req, res) => {
-  dbHelper.retrieveCurrentHour(req.params.id).then((results) => {
-    res.send(results);
-  }).catch((error) => {
-    res.send(error)
-  })
-});
+app.use('/history', historyRoutes(dbHelper))
+app.use('/daily', dailyRoutes(dbHelper))
+app.use('/currenthour', currentHourRoutes(dbHelper))
 
 server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);
