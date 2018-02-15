@@ -5,7 +5,7 @@ const moment = require('moment-timezone');
 const fetch = require('node-fetch');
 
 const dbHelper = require.main.require('./helpers/dbHelper')(knex);
-const timeHelper = require.main.require('./helpers/timeHelper')
+const timeHelper = require.main.require('./lib/time');
 
 const getData = async(coinId, coinName, currency) => {
   try {
