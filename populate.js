@@ -50,11 +50,11 @@ const currencies = [{
   }
 ]
 
-currencies.forEach((currency, j) => {
-  setTimeout(() => {                           
-    historyFetch.fetchHistory(currency.coinId, currency.coinName)
-  }, 2000 * (j + 1));
-});
+// currencies.forEach((currency, j) => {
+//   setTimeout(() => {                           
+//     historyFetch.fetchHistory(currency.coinId, currency.coinName)
+//   }, 2000 * (j + 1));
+// });
 
 currencies.forEach((currency, j) => {
   setTimeout(() => {

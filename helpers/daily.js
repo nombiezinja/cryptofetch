@@ -4,9 +4,8 @@ const knex = require("knex")(knexConfig[ENV]);
 const moment = require('moment-timezone');
 const fetch = require('node-fetch');
 
-const dbHelper = require.main.require('./helpers/dbHelper')(knex);
+const Daily = require.main.require('./lib/models/Daily')(knex);
 const timeHelper = require.main.require('./lib/time');
-
 const getData = async(coinId, coinName, currency) => {
   try {
     const response = await fetch(`https://min-api.cryptocompare.com/data/histohour?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=168&aggregate=1&e=CCCAGG`);
@@ -29,7 +28,7 @@ const fetchDaily = async(coinId, coinName) => {
   if (usdJson.data) {
     usdJson.data.forEach((entry) => {
       console.log(entry)
-      dbHelper.saveDaily(usdJson.coinId, usdJson.coinName, entry).then((id) => {
+      Daily.saveDaily(usdJson.coinId, usdJson.coinName, entry).then((id) => {
         console.log(`Entry ${id} saved`);
       }).catch((err) => {console.log(err)})
     })
@@ -38,7 +37,7 @@ const fetchDaily = async(coinId, coinName) => {
   if (btcJson.data) {
     btcJson.data.forEach((entry) => {
       console.log(entry)
-      dbHelper.updateDailyBtc(btcJson.coinId, entry).then((id) => {
+      Daily.updateDailyBtc(btcJson.coinId, entry).then((id) => {
         console.log(`Entry ${id} updated`);
       }).catch((err) => {console.log(err)})
     })
