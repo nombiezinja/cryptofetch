@@ -1,21 +1,22 @@
-const assert = require("chai").assert;
-const History = require.main.require("lib/models/History");
+var assert = require("chai").assert;
+var History = require.main.require("lib/models/History");
 
-describe("Retrieve Histories method", function() {
+beforeEach(function() {
+
+});
+
+describe("retrieveHistories", function() {
 
   it("should return data", function() {
-    const result = History.retrieveHistories('eth');
-    console.log(result)
-    assert.isTrue(result);
   });
 
 });
 
-describe("History", function() {
+
+
+describe("saveHistory", function() {
 
   it("should save data", function() {
-    const result = true
-    assert.isTrue(result);
   });
 
 });
