@@ -1,11 +1,10 @@
-const ENV = process.env.ENV || "development";
+const ENV = process.env.NODE_ENV 
 const knexConfig = require.main.require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
 const moment = require('moment-timezone');
 const fetch = require('node-fetch');
 
-const dbHelper = require.main.require('./helpers/dbHelper')(knex);
-const timeHelper = require.main.require('./lib/time');
+const History = require.main.require('./lib/models/History')(knex);
 
 const getData = async(coinId, coinName, currency) => {
   try {
@@ -31,7 +30,7 @@ const fetchHistory = async(coinId, coinName) => {
       if (entry.close == 0 && entry.open == 0) {
         return
       }
-      dbHelper.saveHistory(usdJson.coinId,usdJson.coinName,entry).then((id) => {
+      History.saveHistory(usdJson.coinId,usdJson.coinName,entry).then((id) => {
         console.log(`Entry ${id} saved`);
       }).catch((err) => {console.log(err)});
     });
@@ -39,7 +38,7 @@ const fetchHistory = async(coinId, coinName) => {
 
   if (btcJson.data) {
     btcJson.data.forEach((entry) => {
-      dbHelper.updateBtc(btcJson.coinId, entry).then((id) => {
+      History.updateBtc(btcJson.coinId, entry).then((id) => {
         console.log(`Entry ${id} updated`);
       }).catch((err) => {console.log(err)});
     });

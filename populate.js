@@ -1,4 +1,4 @@
-const ENV = process.env.ENV || "development";
+const ENV = process.env.NODE_ENV 
 const knexConfig = require.main.require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
 const historyFetch = require("./helpers/history");
@@ -50,11 +50,11 @@ const currencies = [{
   }
 ]
 
-// currencies.forEach((currency, j) => {
-//   setTimeout(() => {                           
-//     historyFetch.fetchHistory(currency.coinId, currency.coinName)
-//   }, 2000 * (j + 1));
-// });
+currencies.forEach((currency, j) => {
+  setTimeout(() => {                           
+    historyFetch.fetchHistory(currency.coinId, currency.coinName)
+  }, 2000 * (j + 1));
+});
 
 currencies.forEach((currency, j) => {
   setTimeout(() => {

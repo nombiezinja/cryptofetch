@@ -1,11 +1,11 @@
-const ENV = process.env.ENV || "development";
+const ENV = process.env.NODE_ENV 
 const knexConfig = require.main.require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
 const moment = require('moment-timezone');
 const fetch = require('node-fetch');
 
 const Daily = require.main.require('./lib/models/Daily')(knex);
-const timeHelper = require.main.require('./lib/time');
+
 const getData = async(coinId, coinName, currency) => {
   try {
     const response = await fetch(`https://min-api.cryptocompare.com/data/histohour?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=168&aggregate=1&e=CCCAGG`);
