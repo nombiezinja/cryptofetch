@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source:
+    destination: /var/market-history-service
+hooks:
+  AfterInstall:
+    - location: scripts/build_docker.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: scripts/run_docker.sh
+      timeout: 300
+      runas: root
+  ApplicationStop:
+    - location: scripts/stop_docker.sh
+      timeout: 300
+      runas: root
