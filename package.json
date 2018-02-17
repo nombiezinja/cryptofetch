@@ -4,7 +4,7 @@
   "description": "Fetches cryptocurrency data for 11 supported coins and altocoins",
   "main": "server.js",
   "scripts": {
-    "test": "mocha --recursive tests/**/**.spec.js"
+    "test": "mocha tests/**/**.spec.js"
   },
   "repository": {
     "type": "git",
