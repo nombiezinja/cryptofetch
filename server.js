@@ -3,7 +3,6 @@ require('dotenv').config({silent: true})
 const ENV = process.env.NODE_ENV; 
 const port = process.env.PORT || 8080;
 const express = require('express');
-const bodyParser = require('body-parser');
 const knexConfig = require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
 const morgan = require('morgan');
