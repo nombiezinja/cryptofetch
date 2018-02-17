@@ -15,7 +15,9 @@ const schedule = require('node-schedule');
 const app = express();
 const server = http.createServer(app);
 
-const dbHelper = require('./helpers/dbHelper')(knex)
+const Daily = require.main.require('./lib/models/Daily')(knex);
+const History = require.main.require('./lib/models/History')(knex);
+
 const hourlyFetch = require("./lib/tasks/hourlyFetch");
 const dailyFetch = require("./lib/tasks/dailyFetch");
 
@@ -42,9 +44,13 @@ const dailySchedule = schedule.scheduleJob('3 12 * * *', function () {
   dailyFetch.fetchDailyData()
 });
 
-app.use('/history', historyRoutes(dbHelper))
-app.use('/daily', dailyRoutes(dbHelper))
-app.use('/currenthour', currentHourRoutes(dbHelper))
+app.get('/test', (req, res) => {
+  hourlyFetch.fetchHourlyData()
+})
+
+app.use('/history', historyRoutes(History))
+app.use('/daily', dailyRoutes(Daily))
+app.use('/currenthour', currentHourRoutes(Daily))
 
 server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);
