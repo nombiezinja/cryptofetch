@@ -25,10 +25,6 @@ const historyRoutes = require("./lib/routes/history");
 const dailyRoutes = require("./lib/routes/daily");
 const currentHourRoutes = require("./lib/routes/currentHour");
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-
 app.use(morgan('dev'));
 
 app.use(knexLogger(knex));

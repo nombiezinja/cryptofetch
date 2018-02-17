@@ -14,7 +14,6 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/nombiezinja/crypto_data_fetch#readme",
   "dependencies": {
-    "body-parser": "^1.18.2",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
     "knex": "^0.14.2",
