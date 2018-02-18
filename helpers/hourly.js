@@ -20,7 +20,7 @@ const getData = async(coinId, coinName, currency) => {
   }
 };
 
-const fetch = async(coinId, coinName) => {
+const populate = async(coinId, coinName) => {
 
   const btcJson = await getData(coinId, coinName, 'BTC');
   const usdJson = await getData(coinId, coinName, 'USD');
@@ -46,4 +46,6 @@ const fetch = async(coinId, coinName) => {
 };
 
 
-module.exports = fetch
+module.exports = {
+  populate: populate
+}

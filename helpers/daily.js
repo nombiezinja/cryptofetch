@@ -1,4 +1,4 @@
-const ENV = process.env.NODE_ENV 
+const ENV = process.env.NODE_ENV
 const knexConfig = require.main.require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
 const moment = require('moment-timezone');
@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 
 const Daily = require.main.require('./lib/models/Daily')(knex);
 
-const getData = async(coinId, coinName, currency) => {
+const getData = async (coinId, coinName, currency) => {
   try {
     const response = await fetch(`https://min-api.cryptocompare.com/data/histoday?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=2000&aggregate=1&e=CCCAGG`);
     const json = await response.json();
@@ -20,7 +20,7 @@ const getData = async(coinId, coinName, currency) => {
   }
 };
 
-const fetch = async(coinId, coinName) => {
+const populate = async (coinId, coinName) => {
 
   const btcJson = await getData(coinId, coinName, 'BTC');
   const usdJson = await getData(coinId, coinName, 'USD');
@@ -30,9 +30,11 @@ const fetch = async(coinId, coinName) => {
       if (entry.close == 0 && entry.open == 0) {
         return
       }
-      Daily.save(usdJson.coinId,usdJson.coinName,entry).then((id) => {
+      Daily.save(usdJson.coinId, usdJson.coinName, entry).then((id) => {
         console.log(`Entry ${id} saved`);
-      }).catch((err) => {console.log(err)});
+      }).catch((err) => {
+        console.log(err)
+      });
     });
   }
 
@@ -40,11 +42,14 @@ const fetch = async(coinId, coinName) => {
     btcJson.data.forEach((entry) => {
       Daily.updateWithBtcInfo(btcJson.coinId, entry).then((id) => {
         console.log(`Entry ${id} updated`);
-      }).catch((err) => {console.log(err)});
+      }).catch((err) => {
+        console.log(err)
+      });
     });
   }
 
 };
 
-
-module.exports = fetch
+module.exports = {
+  populate: populate
+}
