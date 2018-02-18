@@ -1,8 +1,8 @@
 version: 0.0
 os: linux
 files:
-  - source:
-    destination: /var/market-history-service
+  - source: source
+    destination: /opt/market-history-service
 hooks:
   AfterInstall:
     - location: scripts/build_docker.sh
