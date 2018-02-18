@@ -2,4 +2,5 @@
 
 source ./scripts/common.sh
 
-docker stop $APP_NAME
+# TODO check for running image before stop
+docker stop $APP_NAME || true
