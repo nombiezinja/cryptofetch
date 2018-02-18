@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source ./scripts/common.sh
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+source "$DIR/common.sh"
 
 # clean up any previous build
 echo "Cleanup any old images"
