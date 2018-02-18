@@ -1,8 +1,8 @@
 
 exports.up = function(knex, Promise) {
-  return Promise.all([knex.schema.createTable('histories', function(table){
+  return Promise.all([knex.schema.createTable('dailies', function(table){
     table.increments('id').primary;
-    table.string('coin_id');
+    table.string('name');
     table.string('display_name');
     table.integer('unix_time');
     table.dateTime('utc_date_time');
@@ -20,9 +20,9 @@ exports.up = function(knex, Promise) {
     table.string('low_btc');
     table.timestamp('created_at');
   }),
-  knex.schema.createTable('dailies', function(table) {
+  knex.schema.createTable('hourlies', function(table) {
     table.increments('id').primary;
-    table.string('coin_id');
+    table.string('name');
     table.string('display_name');
     table.integer('unix_time');
     table.dateTime('utc_date_time');
@@ -45,8 +45,8 @@ exports.up = function(knex, Promise) {
   
 exports.down = function(knex, Promise) {
   return Promise.all([
-  knex.schema.dropTable('histories'),
-  knex.schema.dropTable('dailies')
+  knex.schema.dropTable('dailies'),
+  knex.schema.dropTable('hourlies')
   ]);
 };
   
