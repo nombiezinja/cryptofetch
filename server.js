@@ -14,15 +14,15 @@ const schedule = require('node-schedule');
 const app = express();
 const server = http.createServer(app);
 
+const Hourly = require('./lib/models/Hourly')(knex);
 const Daily = require('./lib/models/Daily')(knex);
-const History = require('./lib/models/History')(knex);
 
 const hourlyFetch = require("./lib/tasks/hourlyFetch");
 const dailyFetch = require("./lib/tasks/dailyFetch");
 
-const historyRoutes = require("./lib/routes/history");
-const dailyRoutes = require("./lib/routes/daily");
-const currentHourRoutes = require("./lib/routes/currentHour");
+const hourliesRoutes = require("./lib/routes/hourlies");
+const dailiesRoutes = require("./lib/routes/dailies");
+const hourRoutes = require("./lib/routes/hour");
 
 app.use(morgan('dev'));
 
@@ -37,13 +37,18 @@ const dailySchedule = schedule.scheduleJob('3 12 * * *', function () {
   dailyFetch.fetchDailyData();
 });
 
-app.get('/test', (req, res) => {
+app.get('/test1', (req, res) => {
   hourlyFetch.fetchHourlyData();
 })
 
-app.use('/history', historyRoutes(History));
-app.use('/daily', dailyRoutes(Daily));
-app.use('/currenthour', currentHourRoutes(Daily));
+app.get('/test2', (req, res) => {
+  dailyFetch.fetchDailyData();
+})
+
+
+app.use('/dailies', dailiesRoutes(Daily));
+app.use('/hourlies', hourliesRoutes(Hourly));
+app.use('/hour', hourRoutes(Hourly));
 
 server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);

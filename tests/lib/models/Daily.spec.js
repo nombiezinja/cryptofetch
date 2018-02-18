@@ -1,5 +1,5 @@
 var assert = require("chai").assert;
-var History = require.main.require("lib/models/History");
+var Daily = require.main.require("lib/models/Daily");
 
 beforeEach(function() {
 

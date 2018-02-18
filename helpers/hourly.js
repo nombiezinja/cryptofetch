@@ -1,14 +1,14 @@
 const ENV = process.env.NODE_ENV 
-const knexConfig = require.main.require("./knexfile");
+const knexConfig = require("../knexfile");
 const knex = require("knex")(knexConfig[ENV]);
 const moment = require('moment-timezone');
 const fetch = require('node-fetch');
 
-const History = require.main.require('./lib/models/History')(knex);
+const Hourly = require.main.require('./lib/models/Hourly')(knex);
 
 const getData = async(coinId, coinName, currency) => {
   try {
-    const response = await fetch(`https://min-api.cryptocompare.com/data/histoday?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=2000&aggregate=1&e=CCCAGG`);
+    const response = await fetch(`https://min-api.cryptocompare.com/data/histohour?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=168&aggregate=1&e=CCCAGG`);
     const json = await response.json();
     return {
       coinId: coinId,
@@ -20,33 +20,32 @@ const getData = async(coinId, coinName, currency) => {
   }
 };
 
-const fetchHistory = async(coinId, coinName) => {
+const fetchDaily = async(coinId, coinName) => {
 
   const btcJson = await getData(coinId, coinName, 'BTC');
   const usdJson = await getData(coinId, coinName, 'USD');
 
   if (usdJson.data) {
     usdJson.data.forEach((entry) => {
-      if (entry.close == 0 && entry.open == 0) {
-        return
-      }
-      History.saveHistory(usdJson.coinId,usdJson.coinName,entry).then((id) => {
+      console.log(entry)
+      Hourly.saveDaily(usdJson.coinId, usdJson.coinName, entry).then((id) => {
         console.log(`Entry ${id} saved`);
-      }).catch((err) => {console.log(err)});
-    });
+      }).catch((err) => {console.log(err)})
+    })
   }
 
   if (btcJson.data) {
     btcJson.data.forEach((entry) => {
-      History.updateBtc(btcJson.coinId, entry).then((id) => {
+      console.log(entry)
+      Hourly.updateDailyBtc(btcJson.coinId, entry).then((id) => {
         console.log(`Entry ${id} updated`);
-      }).catch((err) => {console.log(err)});
-    });
+      }).catch((err) => {console.log(err)})
+    })
   }
 
 };
 
 
 module.exports = {
-  fetchHistory: fetchHistory
+  fetchDaily: fetchDaily
 };
