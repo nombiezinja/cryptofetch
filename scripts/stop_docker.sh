@@ -2,4 +2,4 @@
 
 source ./scripts/common.sh
 
-docker stop market-history-service
+docker stop $APP_NAME

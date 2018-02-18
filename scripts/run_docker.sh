@@ -2,6 +2,6 @@
 
 source ./scripts/common.sh
 
-docker run -d --rm --name market-history-service \
+docker run -d --rm --name $APP_NAME \
     --env PORT=8080 -p 8080:8080 \
-    market-history-service:$VERSION
+    $APP_NAME:$VERSION
