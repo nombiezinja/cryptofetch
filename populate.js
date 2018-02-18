@@ -52,12 +52,12 @@ const currencies = [{
 
 currencies.forEach((currency, j) => {
   setTimeout(() => {                           
-    dailyFetch.fetchHistory(currency.coinId, currency.coinName)
+    dailyFetch.fetch(currency.coinId, currency.coinName)
   }, 2000 * (j + 1));
 });
 
 currencies.forEach((currency, j) => {
   setTimeout(() => {
-    hourlyFetch.fetchDaily(currency.coinId, currency.coinName)
+    hourlyFetch.fetch(currency.coinId, currency.coinName)
   }, 2000 * (j + 1));
 });

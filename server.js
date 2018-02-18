@@ -30,19 +30,19 @@ app.use(knexLogger(knex));
 
 //scheduled at 3 minutes past hour to allow data delay from CryptoCompare api
 const hourlySchedule = schedule.scheduleJob('3 * * * *', function () {
-  hourlyFetch.fetchHourlyData();
+  hourlyFetch.fetchData();
 });
 
 const dailySchedule = schedule.scheduleJob('3 12 * * *', function () {
-  dailyFetch.fetchDailyData();
+  dailyFetch.fetchData();
 });
 
 app.get('/test1', (req, res) => {
-  hourlyFetch.fetchHourlyData();
+  hourlyFetch.fetchData();
 })
 
 app.get('/test2', (req, res) => {
-  dailyFetch.fetchDailyData();
+  dailyFetch.fetchData();
 })
 
 

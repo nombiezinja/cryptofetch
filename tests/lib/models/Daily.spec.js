@@ -5,7 +5,7 @@ beforeEach(function() {
 
 });
 
-describe("retrieveHistories", function() {
+describe("retrieveAll", function() {
 
   it("should return data", function() {
   });
@@ -14,7 +14,7 @@ describe("retrieveHistories", function() {
 
 
 
-describe("saveHistory", function() {
+describe("save", function() {
 
   it("should save data", function() {
   });

@@ -20,7 +20,7 @@ const getData = async(coinId, coinName, currency) => {
   }
 };
 
-const fetchDaily = async(coinId, coinName) => {
+const fetch = async(coinId, coinName) => {
 
   const btcJson = await getData(coinId, coinName, 'BTC');
   const usdJson = await getData(coinId, coinName, 'USD');
@@ -28,7 +28,7 @@ const fetchDaily = async(coinId, coinName) => {
   if (usdJson.data) {
     usdJson.data.forEach((entry) => {
       console.log(entry)
-      Hourly.saveDaily(usdJson.coinId, usdJson.coinName, entry).then((id) => {
+      Hourly.save(usdJson.coinId, usdJson.coinName, entry).then((id) => {
         console.log(`Entry ${id} saved`);
       }).catch((err) => {console.log(err)})
     })
@@ -37,7 +37,7 @@ const fetchDaily = async(coinId, coinName) => {
   if (btcJson.data) {
     btcJson.data.forEach((entry) => {
       console.log(entry)
-      Hourly.updateDailyBtc(btcJson.coinId, entry).then((id) => {
+      Hourly.updateWithBtcInfo(btcJson.coinId, entry).then((id) => {
         console.log(`Entry ${id} updated`);
       }).catch((err) => {console.log(err)})
     })
@@ -46,6 +46,4 @@ const fetchDaily = async(coinId, coinName) => {
 };
 
 
-module.exports = {
-  fetchDaily: fetchDaily
-};
+module.exports = fetch

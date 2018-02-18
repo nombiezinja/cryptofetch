@@ -15,8 +15,8 @@ describe('Endpoints', () => {
   // beforeEach((done) => {
   // });
 
-  describe('GET /currentHour/:coin', () => {
-    it('it should GET the currentHour history', (done) => {
+  describe('GET /hour/:coin', () => {
+    it('it should GET the current hour info', (done) => {
       chai.request(server)
       .get('/hour/eth')
         .end((err, res) => {
@@ -30,7 +30,7 @@ describe('Endpoints', () => {
   });
 
   describe('GET /dailies/:coin', () => {
-    it('it should GET history entries', (done) => {
+    it('it should GET dailies entries', (done) => {
       chai.request(server)
       .get('/dailies/eth')
         .end((err, res) => {
@@ -44,7 +44,7 @@ describe('Endpoints', () => {
   });
 
   describe('GET /hourlies/:coin', () => {
-    it('it should get daily entries', (done) => {
+    it('it should get hourlies entries', (done) => {
       chai.request(server)
       .get('/hourlies/eth')
         .end((err, res) => {
