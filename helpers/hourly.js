@@ -6,13 +6,13 @@ const fetch = require('node-fetch');
 
 const Hourly = require.main.require('./lib/models/Hourly')(knex);
 
-const getData = async(coinId, coinName, currency) => {
+const getData = async(name, displayName, currency) => {
   try {
-    const response = await fetch(`https://min-api.cryptocompare.com/data/histohour?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=168&aggregate=1&e=CCCAGG`);
+    const response = await fetch(`https://min-api.cryptocompare.com/data/histohour?fsym=${name.toUpperCase()}&tsym=${currency}&limit=168&aggregate=1&e=CCCAGG`);
     const json = await response.json();
     return {
-      coinId: coinId,
-      coinName: coinName,
+      name: name,
+      displayName: displayName,
       data: json.Data
     };
   } catch (error) {
@@ -20,15 +20,15 @@ const getData = async(coinId, coinName, currency) => {
   }
 };
 
-const populate = async(coinId, coinName) => {
+const populate = async(name, displayName) => {
 
-  const btcJson = await getData(coinId, coinName, 'BTC');
-  const usdJson = await getData(coinId, coinName, 'USD');
+  const btcJson = await getData(name, displayName, 'BTC');
+  const usdJson = await getData(name, displayName, 'USD');
 
   if (usdJson.data) {
     usdJson.data.forEach((entry) => {
       console.log(entry)
-      Hourly.save(usdJson.coinId, usdJson.coinName, entry).then((id) => {
+      Hourly.save(usdJson.name, usdJson.displayName, entry).then((id) => {
         console.log(`Entry ${id} saved`);
       }).catch((err) => {console.log(err)})
     })
@@ -37,7 +37,7 @@ const populate = async(coinId, coinName) => {
   if (btcJson.data) {
     btcJson.data.forEach((entry) => {
       console.log(entry)
-      Hourly.updateWithBtcInfo(btcJson.coinId, entry).then((id) => {
+      Hourly.updateWithBtcInfo(btcJson.name, entry).then((id) => {
         console.log(`Entry ${id} updated`);
       }).catch((err) => {console.log(err)})
     })

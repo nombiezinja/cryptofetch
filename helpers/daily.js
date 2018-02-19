@@ -6,13 +6,13 @@ const fetch = require('node-fetch');
 
 const Daily = require.main.require('./lib/models/Daily')(knex);
 
-const getData = async (coinId, coinName, currency) => {
+const getData = async (name, displayName, currency) => {
   try {
-    const response = await fetch(`https://min-api.cryptocompare.com/data/histoday?fsym=${coinId.toUpperCase()}&tsym=${currency}&limit=2000&aggregate=1&e=CCCAGG`);
+    const response = await fetch(`https://min-api.cryptocompare.com/data/histoday?fsym=${name.toUpperCase()}&tsym=${currency}&limit=2000&aggregate=1&e=CCCAGG`);
     const json = await response.json();
     return {
-      coinId: coinId,
-      coinName: coinName,
+      name: name,
+      displayName: displayName,
       data: json.Data
     };
   } catch (error) {
@@ -20,17 +20,17 @@ const getData = async (coinId, coinName, currency) => {
   }
 };
 
-const populate = async (coinId, coinName) => {
+const populate = async (name, displayName) => {
 
-  const btcJson = await getData(coinId, coinName, 'BTC');
-  const usdJson = await getData(coinId, coinName, 'USD');
+  const btcJson = await getData(name, displayName, 'BTC');
+  const usdJson = await getData(name, displayName, 'USD');
 
   if (usdJson.data) {
     usdJson.data.forEach((entry) => {
       if (entry.close == 0 && entry.open == 0) {
         return
       }
-      Daily.save(usdJson.coinId, usdJson.coinName, entry).then((id) => {
+      Daily.save(usdJson.name, usdJson.displayName, entry).then((id) => {
         console.log(`Entry ${id} saved`);
       }).catch((err) => {
         console.log(err)
@@ -40,7 +40,7 @@ const populate = async (coinId, coinName) => {
 
   if (btcJson.data) {
     btcJson.data.forEach((entry) => {
-      Daily.updateWithBtcInfo(btcJson.coinId, entry).then((id) => {
+      Daily.updateWithBtcInfo(btcJson.name, entry).then((id) => {
         console.log(`Entry ${id} updated`);
       }).catch((err) => {
         console.log(err)

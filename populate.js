@@ -6,59 +6,59 @@ const hourly = require("./helpers/hourly");
 const cryptoCompare = require("./lib/sources/cryptoCompare");
 
 const currencies = [{
-    coinId: 'btc',
-    coinName: 'Bitcoin'
+    name: 'btc',
+    displayName: 'Bitcoin'
   },
   {
-    coinId: 'eth',
-    coinName: 'Ethereum'
+    name: 'eth',
+    displayName: 'Ethereum'
   },
   {
-    coinId: 'neo',
-    coinName: 'NEO'
+    name: 'neo',
+    displayName: 'NEO'
   },
   {
-    coinId: 'gas',
-    coinName: 'GAS'
+    name: 'gas',
+    displayName: 'GAS'
   },
   {
-    coinId: 'ltc',
-    coinName: 'Litecoin'
+    name: 'ltc',
+    displayName: 'Litecoin'
   },
   {
-    coinId: 'lsk',
-    coinName: 'Lisk'
+    name: 'lsk',
+    displayName: 'Lisk'
   },
   {
-    coinId: 'xmr',
-    coinName: 'Monero XMR'
+    name: 'xmr',
+    displayName: 'Monero XMR'
   },
   {
-    coinId: 'ark',
-    coinName: 'Ark'
+    name: 'ark',
+    displayName: 'Ark'
   },
   {
-    coinId: 'iot',
-    coinName: 'Iota'
+    name: 'iot',
+    displayName: 'Iota'
   },
   {
-    coinId: 'omg',
-    coinName: 'OmiseGO'
+    name: 'omg',
+    displayName: 'OmiseGO'
   },
   {
-    coinId: 'bch',
-    coinName: 'Bitcoin Cash'
+    name: 'bch',
+    displayName: 'Bitcoin Cash'
   }
 ]
 
 currencies.forEach((currency, j) => {
   setTimeout(() => {                           
-    cryptoCompare.populateHourly(currency.coinId, currency.coinName)
+    cryptoCompare.populateHourly(currency.name, currency.displayName)
   }, 2000 * (j + 1));
 });
 
 currencies.forEach((currency, j) => {
   setTimeout(() => {
-    cryptoCompare.populateDaily(currency.coinId, currency.coinName)
+    cryptoCompare.populateDaily(currency.name, currency.displayName)
   }, 2000 * (j + 1));
 });
