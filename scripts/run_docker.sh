@@ -4,6 +4,12 @@ DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 source "$DIR/common.sh"
 
-docker run -d --rm --name $APP_NAME \
-    --env PORT=8080 -p 8080:8080 \
+export $(cat $ENV_FILE | grep -v ^# | xargs)
+
+docker run -d --rm \
+    --name $APP_NAME \
+    --env-file $ENV_FILE \
+    -p $PORT:$PORT \
     $APP_NAME:$VERSION
+
+unset $(cat $ENV_FILE | grep -v ^# | sed -E 's/(.*)=.*/\1/' | xargs) 

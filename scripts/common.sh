@@ -23,3 +23,7 @@ else
 fi
 
 echo "APP_PATH: ${APP_PATH}"
+
+ENV_FILE="${APP_PATH}/env_file"
+
+echo "ENV_FILE: ${ENV_FILE}"

@@ -8,6 +8,9 @@ hooks:
     - location: scripts/build_docker.sh
       timeout: 300
       runas: root
+    - location: scripts/fetch_env.sh
+      timeout: 300
+      runas: root
   ApplicationStart:
     - location: scripts/run_docker.sh
       timeout: 300
