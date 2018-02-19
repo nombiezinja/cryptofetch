@@ -38,6 +38,7 @@ describe('Endpoints', () => {
           expect(res.body).to.be.a('array');
           res.body.every(i => expect(i).to.include.all.keys('id', 'volume_btc', 'display_name'));
           res.body.every(i => expect(i.display_name).to.equal('Ethereum'));
+          expect(res.body[0].unix_time - res.body[1].unix_time).to.equal(86400);
           done();
         });
     });
@@ -52,6 +53,7 @@ describe('Endpoints', () => {
           expect(res.body).to.be.a('array');
           res.body.every(i => expect(i).to.include.all.keys('id', 'volume_btc', 'display_name'));
           res.body.every(i => expect(i.display_name).to.equal('Ethereum'));
+          expect(res.body[0].unix_time - res.body[1].unix_time).to.equal(3600);
           done();
         });
     })

@@ -39,11 +39,11 @@ const dailySchedule = schedule.scheduleJob('3 12 * * *', function () {
 
 app.get('/test1', (req, res) => {
   hourlyFetch.fetchData();
-})
+});
 
 app.get('/test2', (req, res) => {
   dailyFetch.fetchData();
-})
+});
 
 
 app.use('/dailies', dailiesRoutes(Daily));
