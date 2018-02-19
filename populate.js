@@ -3,6 +3,7 @@ const knexConfig = require.main.require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
 const daily = require("./helpers/daily");
 const hourly = require("./helpers/hourly");
+const cryptoCompare = require("./lib/sources/cryptoCompare");
 
 const currencies = [{
     coinId: 'btc',
@@ -52,12 +53,12 @@ const currencies = [{
 
 currencies.forEach((currency, j) => {
   setTimeout(() => {                           
-    daily.populate(currency.coinId, currency.coinName)
+    cryptoCompare.populateHourly(currency.coinId, currency.coinName)
   }, 2000 * (j + 1));
 });
 
 currencies.forEach((currency, j) => {
   setTimeout(() => {
-    hourly.populate(currency.coinId, currency.coinName)
+    daily.populate(currency.coinId, currency.coinName)
   }, 2000 * (j + 1));
 });
