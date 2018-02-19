@@ -59,6 +59,6 @@ currencies.forEach((currency, j) => {
 
 currencies.forEach((currency, j) => {
   setTimeout(() => {
-    daily.populate(currency.coinId, currency.coinName)
+    cryptoCompare.populateDaily(currency.coinId, currency.coinName)
   }, 2000 * (j + 1));
 });
