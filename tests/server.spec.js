@@ -20,7 +20,7 @@ describe('Endpoints', () => {
       chai.request(server)
       .get('/hour/eth')
         .end((err, res) => {
-          expect(res).to.have.status(200)
+          expect(res).to.have.status(200);
           expect(res.body).to.be.a('array');
           expect(res.body.length).to.equal(1);
           expect(res.body[0]).to.include.all.keys('id','volume_btc', 'display_name');
@@ -34,10 +34,10 @@ describe('Endpoints', () => {
       chai.request(server)
       .get('/dailies/eth')
         .end((err, res) => {
-          expect(res).to.have.status(200)
+          expect(res).to.have.status(200);
           expect(res.body).to.be.a('array');
-          res.body.every(i => expect(i).to.include.all.keys('id', 'volume_btc', 'display_name'))
-          res.body.every(i => expect(i.display_name).to.equal('Ethereum'))
+          res.body.every(i => expect(i).to.include.all.keys('id', 'volume_btc', 'display_name'));
+          res.body.every(i => expect(i.display_name).to.equal('Ethereum'));
           done();
         });
     });
@@ -48,10 +48,10 @@ describe('Endpoints', () => {
       chai.request(server)
       .get('/hourlies/eth')
         .end((err, res) => {
-          expect(res).to.have.status(200)
+          expect(res).to.have.status(200);
           expect(res.body).to.be.a('array');
-          res.body.every(i => expect(i).to.include.all.keys('id', 'volume_btc', 'display_name'))
-          res.body.every(i => expect(i.display_name).to.equal('Ethereum'))
+          res.body.every(i => expect(i).to.include.all.keys('id', 'volume_btc', 'display_name'));
+          res.body.every(i => expect(i.display_name).to.equal('Ethereum'));
           done();
         });
     })

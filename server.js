@@ -1,4 +1,4 @@
-require('dotenv').config({silent: true})
+require('dotenv').config({silent: true});
 
 const ENV = process.env.NODE_ENV; 
 const port = process.env.PORT || 8080;

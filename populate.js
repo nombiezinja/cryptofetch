@@ -1,4 +1,4 @@
-const ENV = process.env.NODE_ENV 
+const ENV = process.env.NODE_ENV;
 const knexConfig = require.main.require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
 const daily = require("./helpers/daily");
