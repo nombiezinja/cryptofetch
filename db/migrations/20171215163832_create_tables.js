@@ -19,6 +19,7 @@ exports.up = function(knex, Promise) {
     table.string('high_btc');
     table.string('low_btc');
     table.timestamp('created_at');
+    table.index(['name','unix_time']);
   }),
   knex.schema.createTable('hourlies', function(table) {
     table.increments('id').primary;
@@ -39,6 +40,7 @@ exports.up = function(knex, Promise) {
     table.string('high_btc');
     table.string('low_btc');
     table.timestamp('created_at');
+    table.index(['name','unix_time']);
   })
   ]);
 };
