@@ -1,53 +1,9 @@
 const ENV = process.env.NODE_ENV;
 const knexConfig = require.main.require("./knexfile");
 const knex = require("knex")(knexConfig[ENV]);
-const cryptoCompare = require("./lib/sources/cryptoCompare");
 
-const currencies = [{
-    name: 'btc',
-    displayName: 'Bitcoin'
-  },
-  {
-    name: 'eth',
-    displayName: 'Ethereum'
-  },
-  {
-    name: 'neo',
-    displayName: 'NEO'
-  },
-  {
-    name: 'gas',
-    displayName: 'GAS'
-  },
-  {
-    name: 'ltc',
-    displayName: 'Litecoin'
-  },
-  {
-    name: 'lsk',
-    displayName: 'Lisk'
-  },
-  {
-    name: 'xmr',
-    displayName: 'Monero XMR'
-  },
-  {
-    name: 'ark',
-    displayName: 'Ark'
-  },
-  {
-    name: 'iot',
-    displayName: 'Iota'
-  },
-  {
-    name: 'omg',
-    displayName: 'OmiseGO'
-  },
-  {
-    name: 'bch',
-    displayName: 'Bitcoin Cash'
-  }
-]
+const cryptoCompare = require("./lib/sources/cryptoCompare");
+const currencies = require('./lib/data/currencies')
 
 currencies.forEach((currency, j) => {
   setTimeout(() => {                           
