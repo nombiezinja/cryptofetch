@@ -1,22 +1,22 @@
-var assert = require("chai").assert;
-var Daily = require.main.require("lib/models/Daily");
+var assert = require('chai').assert;
+var Daily = require.main.require('lib/models/Daily');
 
 beforeEach(function() {
 
 });
 
-describe("retrieveAll", function() {
+describe('retrieveAll', function() {
 
-  it("should return data", function() {
+  it('should return data', function() {
   });
 
 });
 
 
 
-describe("save", function() {
+describe('save', function() {
 
-  it("should save data", function() {
+  it('should save data', function() {
   });
 
 });
