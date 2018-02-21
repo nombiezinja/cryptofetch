@@ -4,7 +4,7 @@
   "description": "Fetches cryptocurrency data for 11 supported coins and altocoins",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/**/**.spec.js"
   },
   "repository": {
     "type": "git",
@@ -14,9 +14,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/nombiezinja/crypto_data_fetch#readme",
   "dependencies": {
-    "body-parser": "^1.18.2",
     "dotenv": "^4.0.0",
-    "ejs": "^2.5.7",
     "express": "^4.16.2",
     "knex": "^0.14.2",
     "knex-logger": "^0.1.0",
@@ -28,5 +26,11 @@
     "nodemon": "^1.13.3",
     "pg": "^7.4.0",
     "request": "^2.83.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "eslint": "^4.18.0",
+    "mocha": "^5.0.1"
   }
 }
