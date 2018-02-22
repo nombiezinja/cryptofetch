@@ -20,7 +20,7 @@ const dailyFetch = require('./lib/tasks/dailyFetch');
 
 const hourliesRoutes = require('./lib/routes/hourlies');
 const dailiesRoutes = require('./lib/routes/dailies');
-const hourRoutes = require('./lib/routes/hour');
+const currentRoutes = require('./lib/routes/current');
 
 app.use(morgan('dev'));
 
@@ -46,7 +46,7 @@ app.get('/test2', (req, res) => {
 
 app.use('/dailies', dailiesRoutes(Daily));
 app.use('/hourlies', hourliesRoutes(Hourly));
-app.use('/current', hourRoutes(Hourly));
+app.use('/current', currentRoutes(Hourly));
 
 server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);
