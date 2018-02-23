@@ -22,7 +22,12 @@ const hourliesRoutes = require('./lib/routes/hourlies');
 const dailiesRoutes = require('./lib/routes/dailies');
 const currentRoutes = require('./lib/routes/current');
 
-app.use(morgan('dev'));
+const fs = require('fs')
+const path = require('path')
+
+//writing log to file for now, awaiting further instructions on how logging best handled in aws ecosystem
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
+app.use(morgan('combined', {stream: accessLogStream}))
 
 app.use(knexLogger(knex));
 
