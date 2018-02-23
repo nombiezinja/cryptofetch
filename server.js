@@ -22,6 +22,8 @@ const hourliesRoutes = require('./lib/routes/hourlies');
 const dailiesRoutes = require('./lib/routes/dailies');
 const currentRoutes = require('./lib/routes/current');
 
+const currencies = require('./lib/data/currencies');
+
 const fs = require('fs')
 const path = require('path')
 
@@ -48,10 +50,16 @@ app.get('/test2', (req, res) => {
   dailyFetch.fetchData();
 });
 
+const checkParams = (params) => {
+  return currencies.filter(currency => (currency.name === params.name));
+}
 
 const paramsMiddleware = (req, res, next) => {
-  console.log(req.params)
-  next();
+  if (checkParams(req.params).length > 0) {
+    next();
+  } else {
+    res.sendStatus(400)
+  }
 }
 
 app.use('/dailies', dailiesRoutes(paramsMiddleware,Daily));
