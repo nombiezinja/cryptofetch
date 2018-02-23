@@ -16,6 +16,13 @@ End points:
 * /dailies/:name   
     * :name (string); example: eth, btc, neo
     * get all history for currency, 1 entry/day
+* /dailies/:name?begin_time=:begin_time&end_time=:end_time
+    * begin_time, end_time: integer, unix time format; example:1519282000
+    * get all entries for period of time begin_time ~ end_time
+* /dailies/:name?timestamp = :timestamp 
+    * timestamp: integer, unix time format
+    * get single entry for day (will pick day closest to timestamp)
+
 * /hourlies/:name
     * get 3 day history for currency, 1 entry/hour
 * /hourlies/:name?begin_time=:begin_time&end_time=:end_time
@@ -24,7 +31,6 @@ End points:
 * /hourlies/:name?timestamp = :timestamp 
     * timestamp: integer, unix time format
     * get single entry for hour (will pick hour closest to timestamp)
-* /current/hour/:name
-    * get current hour info for currency
+
 * /current/:name
     * get most current info for currency
