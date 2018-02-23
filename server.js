@@ -49,9 +49,14 @@ app.get('/test2', (req, res) => {
 });
 
 
-app.use('/dailies', dailiesRoutes(Daily));
-app.use('/hourlies', hourliesRoutes(Hourly));
-app.use('/current', currentRoutes(Hourly));
+const paramsMiddleware = (req, res, next) => {
+  console.log(req.params)
+  next();
+}
+
+app.use('/dailies', dailiesRoutes(paramsMiddleware,Daily));
+app.use('/hourlies', hourliesRoutes(paramsMiddleware,Hourly));
+app.use('/current', currentRoutes(paramsMiddleware,Hourly));
 
 server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);
