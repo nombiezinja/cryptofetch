@@ -20,11 +20,12 @@ const Daily = require('./lib/models/Daily')(knex);
 const hourlyFetch = require('./lib/tasks/hourlyFetch');
 const dailyFetch = require('./lib/tasks/dailyFetch');
 
-const hourliesRoutes = require('./lib/routes/hourlies');
-const dailiesRoutes = require('./lib/routes/dailies');
-const currentRoutes = require('./lib/routes/current');
+const hourliesRoutes = require('./lib/middlewares/routes/hourlies');
+const dailiesRoutes = require('./lib/middlewares/routes/dailies');
+const currentRoutes = require('./lib/middlewares/routes/current');
 
-const paramsValidator = require('./lib/utils/validParams');
+const paramsMiddleware = require('./lib/middlewares/params')
+
 const fs = require('fs');
 const path = require('path');
 
@@ -32,6 +33,7 @@ const path = require('path');
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {
   flags: 'a'
 });
+
 app.use(morgan('combined', {
   stream: accessLogStream
 }));
@@ -55,19 +57,10 @@ app.get('/test2', (req, res) => {
   dailyFetch.fetchData();
 });
 
-const paramsMiddleware = async (req, res, next) => {
-  const validParams = await paramsValidator.checkParams(req.params);
-  const validQuery = await paramsValidator.checkQuery(req.query);
-  if (validParams && validQuery) {
-    next();
-  } else {
-    res.sendStatus(400);
-  }
-};
-
-app.use('/dailies', dailiesRoutes(paramsMiddleware, Daily));
-app.use('/hourlies', hourliesRoutes(paramsMiddleware, Hourly));
-app.use('/current', currentRoutes(paramsMiddleware));
+app.use(paramsMiddleware)
+app.use('/dailies', dailiesRoutes(Daily));
+app.use('/hourlies', hourliesRoutes(Hourly));
+app.use('/current', currentRoutes);
 
 server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);
