@@ -2,6 +2,8 @@ require('dotenv').config({
   silent: true
 });
 
+console.log(`Knex ENV: ${process.env.NODE_ENV}`);
+
 module.exports = {
 
   test: {
