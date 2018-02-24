@@ -57,7 +57,7 @@ app.get('/test2', (req, res) => {
   dailyFetch.fetchData();
 });
 
-app.use(paramsMiddleware)
+app.use('/', paramsMiddleware)
 app.use('/dailies', dailiesRoutes(Daily));
 app.use('/hourlies', hourliesRoutes(Hourly));
 app.use('/current', currentRoutes);
