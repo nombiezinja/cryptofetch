@@ -57,10 +57,9 @@ app.get('/test2', (req, res) => {
   dailyFetch.fetchData();
 });
 
-app.use('/', paramsMiddleware)
-app.use('/dailies', dailiesRoutes(Daily));
-app.use('/hourlies', hourliesRoutes(Hourly));
-app.use('/current', currentRoutes);
+app.use('/dailies', dailiesRoutes(paramsMiddleware,Daily));
+app.use('/hourlies', hourliesRoutes(paramsMiddleware, Hourly));
+app.use('/current', currentRoutes(paramsMiddleware));
 
 server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);
