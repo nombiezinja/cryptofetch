@@ -1,1 +1,3 @@
 scripts/*
+.git
+node_modules/*
