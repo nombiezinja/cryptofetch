@@ -1,5 +1,13 @@
 # Crypto Data Fetch 
 
+# Setup
+
+* .env and enter the DB_* environment configuration
+  * include NODE_ENV=development
+* run migrations `./node_modules/.bin/knex migrate:latest`
+* Start up the service with `npm start`
+* Seed by going to `http://localhost:8080/test1`
+
 A microservice congregating historical and recent cryptocurrency data for 11 coins/altcoins from Coincap and Cryptocompare, then providing api end points for retrieving these. 
 
 Populate tasks: 
