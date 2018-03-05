@@ -20,9 +20,14 @@ const dailyFetch = require('./lib/tasks/dailyFetch');
 
 const hourliesRoutes = require('./lib/routes/hourlies');
 const dailiesRoutes = require('./lib/routes/dailies');
-const hourRoutes = require('./lib/routes/hour');
+const currentRoutes = require('./lib/routes/current');
 
-app.use(morgan('dev'));
+const fs = require('fs')
+const path = require('path')
+
+//writing log to file for now, awaiting further instructions on how logging best handled in aws ecosystem
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
+app.use(morgan('combined', {stream: accessLogStream}))
 
 app.use(knexLogger(knex));
 
@@ -46,7 +51,7 @@ app.get('/test2', (req, res) => {
 
 app.use('/dailies', dailiesRoutes(Daily));
 app.use('/hourlies', hourliesRoutes(Hourly));
-app.use('/hour', hourRoutes(Hourly));
+app.use('/current', currentRoutes(Hourly));
 
 server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);
