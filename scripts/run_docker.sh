@@ -9,6 +9,7 @@ export $(cat $ENV_FILE | grep -v ^# | xargs)
 docker run -d --rm \
     --name $APP_NAME \
     --env-file $ENV_FILE \
+    --restart unless-stopped \
     -p $PORT:$PORT \
     $APP_NAME:$VERSION
 
