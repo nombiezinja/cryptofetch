@@ -6,7 +6,8 @@ source "$DIR/common.sh"
 
 export $(cat $ENV_FILE | grep -v ^# | xargs)
 
-docker run -d --rm \
+docker run -itd \
+    --network host \
     --name $APP_NAME \
     --env-file $ENV_FILE \
     --restart unless-stopped \
