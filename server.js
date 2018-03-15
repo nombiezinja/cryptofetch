@@ -1,6 +1,8 @@
-require('dotenv').config({silent: true});
+require('dotenv').config({
+  silent: true
+});
 
-const ENV = process.env.NODE_ENV; 
+const ENV = process.env.NODE_ENV;
 const port = process.env.PORT || 8080;
 const express = require('express');
 const knexConfig = require('./knexfile');
@@ -18,16 +20,23 @@ const Daily = require('./lib/models/Daily')(knex);
 const hourlyFetch = require('./lib/tasks/hourlyFetch');
 const dailyFetch = require('./lib/tasks/dailyFetch');
 
-const hourliesRoutes = require('./lib/routes/hourlies');
-const dailiesRoutes = require('./lib/routes/dailies');
-const currentRoutes = require('./lib/routes/current');
+const hourliesRoutes = require('./lib/middlewares/routes/hourlies');
+const dailiesRoutes = require('./lib/middlewares/routes/dailies');
+const currentRoutes = require('./lib/middlewares/routes/current');
 
-const fs = require('fs')
-const path = require('path')
+const paramsMiddleware = require('./lib/middlewares/params')
+
+const fs = require('fs');
+const path = require('path');
 
 //writing log to file for now, awaiting further instructions on how logging best handled in aws ecosystem
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
-app.use(morgan('combined', {stream: accessLogStream}))
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {
+  flags: 'a'
+});
+
+app.use(morgan('combined', {
+  stream: accessLogStream
+}));
 
 app.use(knexLogger(knex));
 
@@ -48,10 +57,9 @@ app.get('/test2', (req, res) => {
   dailyFetch.fetchData();
 });
 
-
-app.use('/dailies', dailiesRoutes(Daily));
-app.use('/hourlies', hourliesRoutes(Hourly));
-app.use('/current', currentRoutes(Hourly));
+app.use('/dailies', dailiesRoutes(paramsMiddleware,Daily));
+app.use('/hourlies', hourliesRoutes(paramsMiddleware, Hourly));
+app.use('/current', currentRoutes(paramsMiddleware));
 
 server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);
