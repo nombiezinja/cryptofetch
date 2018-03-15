@@ -6,7 +6,7 @@ source "$DIR/common.sh"
 
 # clean up any previous build
 echo "Cleanup any old images"
-docker rmi -f $APP_NAME
+docker images -q $APP_NAME|xargs docker rmi || true
 
 # build and tag
 echo "Building new image"

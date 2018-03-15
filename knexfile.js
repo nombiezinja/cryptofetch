@@ -10,7 +10,8 @@ module.exports = {
       database: process.env.DB_TEST_NAME,
       port: process.env.DB_PORT,
       password: process.env.DB_PASSWORD,
-      user: process.env.DB_USER
+      user: process.env.DB_USER,
+      host: process.env.DB_HOST || 'localhost',
     },
     migrations: {
       directory: './db/migrations',
@@ -27,7 +28,8 @@ module.exports = {
       database: process.env.DB_NAME,
       port: process.env.DB_PORT,
       password: process.env.DB_PASSWORD,
-      user: process.env.DB_USER
+      user: process.env.DB_USER,
+      host: process.env.DB_HOST || 'localhost',
     },
     migrations: {
       directory: './db/migrations',
