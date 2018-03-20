@@ -1,6 +1,6 @@
 # Crypto Data Fetch 
 
-Note: This service is currently running on the staging server. To access the data, use the end points below.
+Note: This service is currently running on the staging server and does not need to be set up locally if you're just accessing the data. To access the data, use the end points below.
 # Setup
 
 * .env and enter the DB_* environment configuration:
