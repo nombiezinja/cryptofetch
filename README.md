@@ -1,8 +1,16 @@
 # Crypto Data Fetch 
 
+Note: This service is currently running on the staging server. To access the data, use the end points below.
 # Setup
 
-* .env and enter the DB_* environment configuration
+* .env and enter the DB_* environment configuration:
+    ```DB_NAME=crypto_data_fetch
+        DB_TEST_NAME=crypto_data_test
+        DB_SSL=true
+        DB_PASSWORD=[your_password]
+        DB_PORT=5432
+        DB_USER=[your_username]
+        PORT=8080```
   * include NODE_ENV=development
 * run migrations `./node_modules/.bin/knex migrate:latest`
 * Start up the service with `npm start`
