@@ -12,6 +12,7 @@ const http = require('http');
 const knexLogger = require('knex-logger');
 const schedule = require('node-schedule');
 const app = express();
+const moment = require('moment');
 const server = http.createServer(app);
 
 const Hourly = require('./lib/models/Hourly')(knex);
@@ -37,16 +38,19 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),
 // app.use(morgan('combined', {
 //   stream: accessLogStream
 // }));
+
 app.use(morgan('dev'));
 
 app.use(knexLogger(knex));
 
 //scheduled at 3 minutes past hour to allow data delay from CryptoCompare api
 const hourlySchedule = schedule.scheduleJob('3 * * * *', function () {
+  console.log(`Scheduled hourly data fetch task running at utc time${moment.utc()}`)
   hourlyFetch.fetchData();
 });
 
 const dailySchedule = schedule.scheduleJob('3 12 * * *', function () {
+  console.log(`Scheduled daily data fetch task running at utc time${moment.utc()}`)
   dailyFetch.fetchData();
 });
 
