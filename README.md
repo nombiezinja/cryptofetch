@@ -1,9 +1,11 @@
 # Crypto Data Fetch 
 
 Note: This service is currently running on the staging server and does not need to be set up locally if you're just accessing the data. To access the data, use the end points below.
+http://staging-temp.fxmusings.com:3000/
+
 # Setup
 
-* .env and enter the DB_* environment configuration:
+* make .env file and enter the DB_* environment configuration:
     ```DB_NAME=crypto_data_fetch
         DB_TEST_NAME=crypto_data_test
         DB_SSL=true
@@ -14,7 +16,7 @@ Note: This service is currently running on the staging server and does not need 
   * include NODE_ENV=development
 * run migrations `./node_modules/.bin/knex migrate:latest`
 * Start up the service with `npm start`
-* Seed by going to `http://localhost:8080/test1`
+* Seed by running `node populate.js` from the root directory
 
 A microservice congregating historical and recent cryptocurrency data for 11 coins/altcoins from Coincap and Cryptocompare, then providing api end points for retrieving these. 
 

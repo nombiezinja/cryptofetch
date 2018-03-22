@@ -50,14 +50,6 @@ const dailySchedule = schedule.scheduleJob('3 12 * * *', function () {
   dailyFetch.fetchData();
 });
 
-app.get('/test1', (req, res) => {
-  hourlyFetch.fetchData();
-});
-
-app.get('/test2', (req, res) => {
-  dailyFetch.fetchData();
-});
-
 app.use('/dailies', dailiesRoutes(paramsMiddleware,Daily));
 app.use('/hourlies', hourliesRoutes(paramsMiddleware, Hourly));
 app.use('/current', currentRoutes(paramsMiddleware));
