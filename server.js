@@ -25,7 +25,7 @@ const hourliesRoutes = require('./lib/middlewares/routes/hourlies');
 const dailiesRoutes = require('./lib/middlewares/routes/dailies');
 const currentRoutes = require('./lib/middlewares/routes/current');
 
-const paramsMiddleware = require('./lib/middlewares/params')
+const paramsMiddleware = require('./lib/middlewares/params');
 
 const fs = require('fs');
 const path = require('path');
@@ -45,18 +45,26 @@ app.use(knexLogger(knex));
 
 //scheduled at 3 minutes past hour to allow data delay from CryptoCompare api
 const hourlySchedule = schedule.scheduleJob('3 * * * *', function () {
-  console.log(`Scheduled hourly data fetch task running at utc time${moment.utc()}`)
+  console.log(`Scheduled hourly data fetch task running at utc time${moment.utc()}`);
   hourlyFetch.fetchData();
 });
 
 const dailySchedule = schedule.scheduleJob('3 12 * * *', function () {
-  console.log(`Scheduled daily data fetch task running at utc time${moment.utc()}`)
+  console.log(`Scheduled daily data fetch task running at utc time${moment.utc()}`);
   dailyFetch.fetchData();
 });
 
 app.use('/dailies', dailiesRoutes(paramsMiddleware,Daily));
 app.use('/hourlies', hourliesRoutes(paramsMiddleware, Hourly));
 app.use('/current', currentRoutes(paramsMiddleware));
+
+app.get('/test1', (req, res) => {
+  hourlyFetch.fetchData();
+});
+
+app.get('/test2', (req, res) => {
+  dailyFetch.fetchData();
+});
 
 server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);
