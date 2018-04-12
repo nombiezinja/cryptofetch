@@ -51,6 +51,6 @@ End points:
 * /hourlies/:name?timestamp = :timestamp 
     * timestamp: integer, unix time format
     * get single entry for hour (will pick hour closest to timestamp)
-
+    * note: requesting an rate from this endpoint beyond what is stored in the table will return an empty array. Use dailies routes for older dates.
 * /current/:name
     * get most current info for currency
