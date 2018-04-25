@@ -34,8 +34,9 @@ End points:
 * /dailies/:name   
     * :name (string); example: eth, btc, neo
     * get all history for currency, 1 entry/day
-* /dailies/:name?begin_time=:begin_time&end_time=:end_time
+* /dailies/:name?begin_time=:begin_time&end_time=:end_time&order=:order
     * begin_time, end_time: integer, unix time format; example:1519282000
+    * order: tell knex to sort records by unix_time; values can be 'asc' or 'desc'
     * get all entries for period of time begin_time ~ end_time
 * /dailies/:name?timestamp = :timestamp 
     * timestamp: integer, unix time format
@@ -43,12 +44,13 @@ End points:
 
 * /hourlies/:name
     * get 3 day history for currency, 1 entry/hour
-* /hourlies/:name?begin_time=:begin_time&end_time=:end_time
+* /hourlies/:name?begin_time=:begin_time&end_time=:end_time&order=:order
     * begin_time, end_time: integer, unix time format; example:1519282000
+    * order: tell knex to sort records by unix_time; values can be 'asc' or 'desc'
     * get all entries for period of time begin_time ~ end_time 
 * /hourlies/:name?timestamp = :timestamp 
     * timestamp: integer, unix time format
     * get single entry for hour (will pick hour closest to timestamp)
-
+    * note: requesting an rate from this endpoint beyond what is stored in the table will return an empty array. Use dailies routes for older dates.
 * /current/:name
     * get most current info for currency
