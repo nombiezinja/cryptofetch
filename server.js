@@ -4,6 +4,7 @@ require('dotenv').config({
 
 const ENV = process.env.NODE_ENV;
 const port = process.env.PORT || 8080;
+const { CURRENT_DATA_FETCH_DELAY_IN_MILLISEC } = process.env;
 const express = require('express');
 const knexConfig = require('./knexfile');
 const knex = require('knex')(knexConfig[ENV]);
@@ -17,9 +18,11 @@ const server = http.createServer(app);
 
 const Hourly = require('./lib/models/Hourly')(knex);
 const Daily = require('./lib/models/Daily')(knex);
+const DelayedCurrent = require('./lib/models/DelayedCurrent')(knex);
 
 const hourlyFetch = require('./lib/tasks/hourlyFetch');
 const dailyFetch = require('./lib/tasks/dailyFetch');
+const delayedCurrentFetch = require('./lib/tasks/delayedCurrentFetch');
 
 const hourliesRoutes = require('./lib/middlewares/routes/hourlies');
 const dailiesRoutes = require('./lib/middlewares/routes/dailies');
@@ -54,13 +57,15 @@ const dailySchedule = schedule.scheduleJob('3 12 * * *', function () {
   dailyFetch.fetchData();
 });
 
+delayedCurrentFetch.fetchDataEveryIntervalInMillisec(CURRENT_DATA_FETCH_DELAY_IN_MILLISEC);
+
 app.use('/dailies', dailiesRoutes(paramsMiddleware,Daily));
 app.use('/hourlies', hourliesRoutes(paramsMiddleware, Hourly));
-app.use('/current', currentRoutes(paramsMiddleware));
+app.use('/current', currentRoutes(paramsMiddleware, DelayedCurrent));
 
-// app.get('/test1', (req, res) => {
-//   hourlyFetch.fetchData();
-// });
+app.get('/test1', (req, res) => {
+  hourlyFetch.fetchData();
+});
 
 // app.get('/test2', (req, res) => {
 //   dailyFetch.fetchData();
