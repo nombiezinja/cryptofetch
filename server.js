@@ -58,9 +58,9 @@ app.use('/dailies', dailiesRoutes(paramsMiddleware,Daily));
 app.use('/hourlies', hourliesRoutes(paramsMiddleware, Hourly));
 app.use('/current', currentRoutes(paramsMiddleware));
 
-// app.get('/test1', (req, res) => {
-//   hourlyFetch.fetchData();
-// });
+app.get('/test1', (req, res) => {
+  hourlyFetch.fetchData();
+});
 
 // app.get('/test2', (req, res) => {
 //   dailyFetch.fetchData();
