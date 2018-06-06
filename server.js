@@ -67,9 +67,9 @@ app.get('/test1', (req, res) => {
   hourlyFetch.fetchData();
 });
 
-// app.get('/test2', (req, res) => {
-//   dailyFetch.fetchData();
-// });
+app.get('/test2', (req, res) => {
+  dailyFetch.fetchData();
+});
 
 server.listen(port, function listening() {
   console.log('Listening on %d', server.address().port);
