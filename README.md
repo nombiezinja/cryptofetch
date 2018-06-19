@@ -54,3 +54,7 @@ End points:
     * note: requesting an rate from this endpoint beyond what is stored in the table will return an empty array. Use dailies routes for older dates.
 * /current/:name
     * get most current info for currency
+* /current/from/:name/to/:currency
+    * :name (string); base currency, e.g. eth, btc, neo
+    * :currency (string); quoted currency, only accepts usd, btc
+    * get most current price data for a currency pair from local database
