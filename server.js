@@ -57,7 +57,7 @@ const dailySchedule = schedule.scheduleJob('3 12 * * *', function () {
   dailyFetch.fetchData();
 });
 
-delayedCurrentFetch.fetchDataEveryIntervalInMillisec(CURRENT_DATA_FETCH_DELAY_IN_MILLISEC);
+// delayedCurrentFetch.fetchDataEveryIntervalInMillisec(CURRENT_DATA_FETCH_DELAY_IN_MILLISEC);
 
 app.use('/dailies', dailiesRoutes(paramsMiddleware,Daily));
 app.use('/hourlies', hourliesRoutes(paramsMiddleware, Hourly));
